@@ -35,7 +35,7 @@
             this._editorContainer = null;
             this._contentContainer = null;
             this.oldRect = {};
-        }
+        } 
 
         _EditorApp.prototype.ctrlDown = function () {
             return this._ctrlDown;
