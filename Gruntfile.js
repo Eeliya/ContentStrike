@@ -82,7 +82,7 @@
                 build: {
                     src: [
                         'external/scripts/content-edit.js',
-                        'src/tmp/content-tools.js',
+                        //'src/tmp/content-tools.js',
                         // compiled coffee
                         'src/scripts/namespace.js',
                         'src/scripts/ui/ui.js',
@@ -151,7 +151,7 @@
         grunt.loadNpmTasks('grunt-contrib-copy');
 
         grunt.registerTask('build-dev', ['concat:build', 'cssmin:build', 'copy:build']);
-        grunt.registerTask('build-production', [/*'coffee:build', */'concat:build', 'uglify:build', /* 'clean:build', */'cssmin:build', 'copy:build']);
+        grunt.registerTask('build-production', [/*'coffee:build', */'concat:build', 'uglify:build',  'clean:build', 'cssmin:build', 'copy:build']);
         grunt.registerTask('sandbox', ['coffee:sandbox']);
         grunt.registerTask('spec', ['coffee:spec']);
         grunt.registerTask('watch-build', ['watch:build']);
