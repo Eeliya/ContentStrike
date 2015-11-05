@@ -111,7 +111,7 @@
                     expand: true,
                     cwd: 'build/',
                     src: ['**'],
-                    dest: "C:/xampp/htdocs/EverythingWidget/packages/admin/html/Tools/ContentStrike/"
+                    dest: "C:/xampp/htdocs/EverythingWidget/packages/admin/html/lib/ContentStrike/"
                 }
             },
             clean: {
@@ -129,7 +129,7 @@
             watch: {
                 build: {
                     files: ['src/scripts/**/*.js'],
-                    tasks: ['build']
+                    tasks: ['build-dev']
                 },
                 sandbox: {
                     files: ['src/sandbox/*.coffee'],
@@ -150,7 +150,8 @@
         grunt.loadNpmTasks('grunt-contrib-cssmin');
         grunt.loadNpmTasks('grunt-contrib-copy');
 
-        grunt.registerTask('build', [/*'coffee:build', */'concat:build', 'uglify:build',  /* 'clean:build', */'cssmin:build']);
+        grunt.registerTask('build-dev', ['concat:build', 'cssmin:build', 'copy:build']);
+        grunt.registerTask('build-production', [/*'coffee:build', */'concat:build', 'uglify:build', /* 'clean:build', */'cssmin:build', 'copy:build']);
         grunt.registerTask('sandbox', ['coffee:sandbox']);
         grunt.registerTask('spec', ['coffee:spec']);
         grunt.registerTask('watch-build', ['watch:build']);

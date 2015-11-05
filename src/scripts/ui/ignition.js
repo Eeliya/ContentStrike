@@ -6,8 +6,9 @@
   ContentTools.IgnitionUI = (function(superClass) {
     extend(IgnitionUI, superClass);
 
-    function IgnitionUI() {
+    function IgnitionUI(conf) {
       IgnitionUI.__super__.constructor.call(this);
+      this._conf = conf;
       this._busy = false;
     }
 
