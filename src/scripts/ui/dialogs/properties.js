@@ -1,9 +1,21 @@
-(function() {
+(function () {
   var AttributeUI, StyleUI,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+          __hasProp = {}.hasOwnProperty,
+          __extends = function (child, parent) {
+            for (var key in parent) {
+              if (__hasProp.call(parent, key))
+                child[key] = parent[key];
+            }
+            function ctor() {
+              this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor();
+            child.__super__ = parent.prototype;
+            return child;
+          };
 
-  ContentTools.PropertiesDialog = (function(_super) {
+  ContentTools.PropertiesDialog = (function (_super) {
     __extends(PropertiesDialog, _super);
 
     function PropertiesDialog(element) {
@@ -19,7 +31,7 @@
       }
     }
 
-    PropertiesDialog.prototype.caption = function(caption) {
+    PropertiesDialog.prototype.caption = function (caption) {
       if (caption === void 0) {
         return this._caption;
       }
@@ -27,7 +39,7 @@
       return this._domCaption.textContent = ContentEdit._(caption) + (": " + (this.element.tagName()));
     };
 
-    PropertiesDialog.prototype.changedAttributes = function() {
+    PropertiesDialog.prototype.changedAttributes = function () {
       var attributeUI, attributes, changedAttributes, name, restricted, value, _i, _len, _ref, _ref1;
       attributes = {};
       changedAttributes = {};
@@ -58,7 +70,7 @@
       return changedAttributes;
     };
 
-    PropertiesDialog.prototype.changedStyles = function() {
+    PropertiesDialog.prototype.changedStyles = function () {
       var cssClass, styleUI, styles, _i, _len, _ref;
       styles = {};
       _ref = this._styleUIs;
@@ -72,7 +84,7 @@
       return styles;
     };
 
-    PropertiesDialog.prototype.getElementInnerHTML = function() {
+    PropertiesDialog.prototype.getElementInnerHTML = function () {
       if (!this._supportsCoding) {
         return null;
       }
@@ -82,7 +94,7 @@
       return this.element.children[0].content.html();
     };
 
-    PropertiesDialog.prototype.mount = function() {
+    PropertiesDialog.prototype.mount = function () {
       var attributeNames, attributes, domActions, domTabs, lastTab, name, restricted, style, styleUI, value, _i, _j, _len, _len1, _ref;
       PropertiesDialog.__super__.mount.call(this);
       ContentEdit.addCSSClass(this._domElement, 'ct-properties-dialog');
@@ -159,7 +171,7 @@
       return this._addDOMEventListeners();
     };
 
-    PropertiesDialog.prototype.save = function() {
+    PropertiesDialog.prototype.save = function () {
       var innerHTML;
       innerHTML = null;
       if (this._supportsCoding) {
@@ -168,12 +180,12 @@
       return this.trigger('save', this.changedAttributes(), this.changedStyles(), innerHTML);
     };
 
-    PropertiesDialog.prototype._addAttributeUI = function(name, value) {
+    PropertiesDialog.prototype._addAttributeUI = function (name, value) {
       var attributeUI, dialog;
       dialog = this;
       attributeUI = new AttributeUI(name, value);
       this._attributeUIs.push(attributeUI);
-      attributeUI.bind('blur', function() {
+      attributeUI.bind('blur', function () {
         var index, lastAttributeUI, length;
         dialog._focusedAttributeUI = null;
         ContentEdit.addCSSClass(dialog._domRemoveAttribute, 'ct-control--muted');
@@ -190,11 +202,11 @@
           }
         }
       });
-      attributeUI.bind('focus', function() {
+      attributeUI.bind('focus', function () {
         dialog._focusedAttributeUI = this;
         return ContentEdit.removeCSSClass(dialog._domRemoveAttribute, 'ct-control--muted');
       });
-      attributeUI.bind('namechange', function() {
+      attributeUI.bind('namechange', function () {
         var element, otherAttributeUI, restricted, valid, _i, _len, _ref;
         element = dialog.element;
         name = this.name().toLowerCase();
@@ -228,11 +240,11 @@
       return attributeUI;
     };
 
-    PropertiesDialog.prototype._addDOMEventListeners = function() {
+    PropertiesDialog.prototype._addDOMEventListeners = function () {
       var selectTab, validateCode,
-        _this = this;
+              _this = this;
       PropertiesDialog.__super__._addDOMEventListeners.call(this);
-      selectTab = function(selected) {
+      selectTab = function (selected) {
         var selectedCap, tab, tabCap, tabs, _i, _len;
         tabs = ['attributes', 'code', 'styles'];
         for (_i = 0, _len = tabs.length; _i < _len; _i++) {
@@ -249,16 +261,16 @@
         ContentEdit.addCSSClass(_this["_dom" + selectedCap + "Tab"], 'ct-control--active');
         return window.localStorage.setItem('ct-properties-dialog-tab', selected);
       };
-      this._domStylesTab.addEventListener('mousedown', function() {
+      this._domStylesTab.addEventListener('mousedown', function () {
         return selectTab('styles');
       });
-      this._domAttributesTab.addEventListener('mousedown', function() {
+      this._domAttributesTab.addEventListener('mousedown', function () {
         return selectTab('attributes');
       });
-      this._domCodeTab.addEventListener('mousedown', function() {
+      this._domCodeTab.addEventListener('mousedown', function () {
         return selectTab('code');
       });
-      this._domRemoveAttribute.addEventListener('mousedown', function(ev) {
+      this._domRemoveAttribute.addEventListener('mousedown', function (ev) {
         var index, last;
         ev.preventDefault();
         if (_this._focusedAttributeUI) {
@@ -271,7 +283,7 @@
           }
         }
       });
-      validateCode = function(ev) {
+      validateCode = function (ev) {
         var content;
         try {
           content = new HTMLString.String(_this._domInnerHTML.value);
@@ -284,7 +296,7 @@
       };
       this._domInnerHTML.addEventListener('input', validateCode);
       this._domInnerHTML.addEventListener('propertychange', validateCode);
-      return this._domApply.addEventListener('click', function(ev) {
+      return this._domApply.addEventListener('click', function (ev) {
         var cssClass;
         ev.preventDefault();
         cssClass = _this._domApply.getAttribute('class');
@@ -298,7 +310,7 @@
 
   })(ContentTools.DialogUI);
 
-  StyleUI = (function(_super) {
+  StyleUI = (function (_super) {
     __extends(StyleUI, _super);
 
     function StyleUI(style, applied) {
@@ -307,7 +319,7 @@
       this._applied = applied;
     }
 
-    StyleUI.prototype.applied = function(applied) {
+    StyleUI.prototype.applied = function (applied) {
       if (applied === void 0) {
         return this._applied;
       }
@@ -322,7 +334,7 @@
       }
     };
 
-    StyleUI.prototype.mount = function(domParent, before) {
+    StyleUI.prototype.mount = function (domParent, before) {
       var label;
       if (before == null) {
         before = null;
@@ -338,10 +350,10 @@
       return StyleUI.__super__.mount.call(this, domParent, before);
     };
 
-    StyleUI.prototype._addDOMEventListeners = function() {
+    StyleUI.prototype._addDOMEventListeners = function () {
       var toggleSection,
-        _this = this;
-      toggleSection = function(ev) {
+              _this = this;
+      toggleSection = function (ev) {
         ev.preventDefault();
         if (_this.applied()) {
           return _this.applied(false);
@@ -356,7 +368,7 @@
 
   })(ContentTools.AnchoredComponentUI);
 
-  AttributeUI = (function(_super) {
+  AttributeUI = (function (_super) {
     __extends(AttributeUI, _super);
 
     function AttributeUI(name, value) {
@@ -365,15 +377,15 @@
       this._initialValue = value;
     }
 
-    AttributeUI.prototype.name = function() {
+    AttributeUI.prototype.name = function () {
       return this._domName.value.trim();
     };
 
-    AttributeUI.prototype.value = function() {
+    AttributeUI.prototype.value = function () {
       return this._domValue.value.trim();
     };
 
-    AttributeUI.prototype.mount = function(domParent, before) {
+    AttributeUI.prototype.mount = function (domParent, before) {
       if (before == null) {
         before = null;
       }
@@ -395,7 +407,7 @@
       return AttributeUI.__super__.mount.call(this, domParent, before);
     };
 
-    AttributeUI.prototype.valid = function(valid) {
+    AttributeUI.prototype.valid = function (valid) {
       if (valid) {
         return ContentEdit.removeCSSClass(this._domName, 'ct-attribute__name--invalid');
       } else {
@@ -403,9 +415,9 @@
       }
     };
 
-    AttributeUI.prototype._addDOMEventListeners = function() {
+    AttributeUI.prototype._addDOMEventListeners = function () {
       var _this = this;
-      this._domName.addEventListener('blur', function() {
+      this._domName.addEventListener('blur', function () {
         var name, nextDomAttribute, nextNameDom;
         name = _this.name();
         nextDomAttribute = _this._domElement.nextSibling;
@@ -415,24 +427,24 @@
           return nextNameDom.focus();
         }
       });
-      this._domName.addEventListener('focus', function() {
+      this._domName.addEventListener('focus', function () {
         return _this.trigger('focus');
       });
-      this._domName.addEventListener('input', function() {
+      this._domName.addEventListener('input', function () {
         return _this.trigger('namechange');
       });
-      this._domName.addEventListener('keydown', function(ev) {
+      this._domName.addEventListener('keydown', function (ev) {
         if (ev.keyCode === 13) {
           return _this._domValue.focus();
         }
       });
-      this._domValue.addEventListener('blur', function() {
+      this._domValue.addEventListener('blur', function () {
         return _this.trigger('blur');
       });
-      this._domValue.addEventListener('focus', function() {
+      this._domValue.addEventListener('focus', function () {
         return _this.trigger('focus');
       });
-      return this._domValue.addEventListener('keydown', function(ev) {
+      return this._domValue.addEventListener('keydown', function (ev) {
         var nextDomAttribute, nextNameDom;
         if (ev.keyCode !== 13 && (ev.keyCode !== 9 || ev.shiftKey)) {
           return;

@@ -14,7 +14,7 @@
 
     ModalUI.prototype.mount = function() {
       this._domElement = this.constructor.createDiv(['ct-widget', 'ct-modal']);
-      this.parent().domElement().appendChild(this._domElement);
+      this.parent()._editorContainer.appendChild(this._domElement);
       if (this._transparent) {
         this.addCSSClass('ct-modal--transparent');
       }

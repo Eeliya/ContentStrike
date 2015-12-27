@@ -94,6 +94,7 @@
                         'src/scripts/ui/dialogs/dialogs.js',
                         'src/scripts/ui/dialogs/image.js',
                         'src/scripts/ui/dialogs/link.js',
+                        'src/scripts/ui/dialogs/content-field.js',
                         'src/scripts/ui/dialogs/properties.js',
                         'src/scripts/ui/dialogs/table.js',
                         'src/scripts/ui/dialogs/video.js',
@@ -111,7 +112,7 @@
                     expand: true,
                     cwd: 'build/',
                     src: ['**'],
-                    dest: "C:/xampp/htdocs/EverythingWidget/packages/admin/html/lib/ContentStrike/"
+                    dest: "C:/xampp/htdocs/EverythingWidget/packages/admin/public/js/ContentStrike/"
                 }
             },
             clean: {
@@ -130,6 +131,10 @@
                 build: {
                     files: ['src/scripts/**/*.js'],
                     tasks: ['build-dev']
+                },
+                production: {
+                    files: ['external/scripts/content-edit.js','src/scripts/**/*.js','src/style/*.css'],
+                    tasks: ['build-production']
                 },
                 sandbox: {
                     files: ['src/sandbox/*.coffee'],
@@ -155,6 +160,7 @@
         grunt.registerTask('sandbox', ['coffee:sandbox']);
         grunt.registerTask('spec', ['coffee:spec']);
         grunt.registerTask('watch-build', ['watch:build']);
+        grunt.registerTask('watch-production', ['watch:production']);
         grunt.registerTask('watch-sandbox', ['watch:sandbox']);
         grunt.registerTask('copy-to-ew', ['copy:build']);
         return grunt.registerTask('watch-spec', ['watch:spec']);
