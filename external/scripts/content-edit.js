@@ -3093,6 +3093,10 @@
       return instance != null ? instance : instance = new _Root();
     };
 
+    Root.reset = function () {
+      instance = null;
+    };
+
     return Root;
 
   })();
