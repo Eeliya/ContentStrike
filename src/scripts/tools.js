@@ -287,7 +287,8 @@
     ContentField.label = 'Content Field';
     ContentField.icon = 'content-field';
 
-    var app = ContentTools.EditorApp.get();
+    
+    
 
     ContentEdit.Root.get().bind('mount', function (element) {
       if (element.attr("content-field")) {
@@ -354,6 +355,7 @@
       element.addCSSClass("ew-content-field");
 
       container.style.position = "absolute";
+      var app = ContentTools.EditorApp.get();
       app._contentContainer.appendChild(container);
 
       var parentRect = app._contentContainer.getBoundingClientRect(),

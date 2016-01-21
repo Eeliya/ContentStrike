@@ -3094,7 +3094,7 @@
     };
 
     Root.reset = function () {
-      instance = null;
+      instance  = new _Root();
     };
 
     return Root;
