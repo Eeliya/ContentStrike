@@ -65,7 +65,8 @@
             },
             cssmin: {
                 build: {
-                    src: 'src/style/content-tools.css',
+                    //src: 'src/style/content-tools.css',
+                    src: 'src/style/ew-content-tools.css',
                     dest: 'build/content-tools.min.css'
                 }
             },
@@ -83,9 +84,11 @@
                 build: {
                     src: [
                         'external/scripts/content-edit.js',
+                        'src/scripts/ew/ew-content-edit.js',
                         //'src/tmp/content-tools.js',
                         // compiled coffee
-                        'src/scripts/namespace.js',
+                        //'src/scripts/namespace.js',
+                        'src/scripts/ew/ew-namespace.js',
                         'src/scripts/ui/ui.js',
                         'src/scripts/ui/flashes.js',
                         'src/scripts/ui/ignition.js',
@@ -95,15 +98,18 @@
                         'src/scripts/ui/dialogs/dialogs.js',
                         'src/scripts/ui/dialogs/image.js',
                         'src/scripts/ui/dialogs/image-link.js',
-                        'src/scripts/ui/dialogs/link.js',
+                        //'src/scripts/ui/dialogs/link.js',
+                        'src/scripts/ew/ew-dialog-link.js',
                         'src/scripts/ui/dialogs/content-field.js',
                         'src/scripts/ui/dialogs/properties.js',
                         'src/scripts/ui/dialogs/table.js',
                         'src/scripts/ui/dialogs/video.js',
-                        'src/scripts/editor.js',
+                        //'src/scripts/editor.js',
+                        'src/scripts/ew/ew-editor.js',
                         'src/scripts/history.js',
                         'src/scripts/styles.js',
-                        'src/scripts/tools.js'
+                        'src/scripts/tools.js',
+                        'src/scripts/ew/ew-tools.js'
                     ],
                     dest: 'build/content-tools.js'
 
