@@ -4901,36 +4901,23 @@
  * Overwrite Region to add `region-ready` event
  */
 (function () {
-  var _Root, _TagNames, _mergers,
-    __slice = [
-    ].slice,
-    __indexOf = [
-    ].indexOf || function (item) {
-    for (var i = 0, l = this.length; i < l; i++) {
-      if (i in this && this[i] === item)
-        return i;
-    }
-    return -1;
-  },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function (child, parent) {
-      for (var key in parent) {
-        if (__hasProp.call(parent, key))
-          child[key] = parent[key];
-      }
-      function ctor() {
-        this.constructor = child;
-      }
-      ctor.prototype = parent.prototype;
-      child.prototype = new ctor();
-      child.__super__ = parent.prototype;
-      return child;
-    },
-    __bind = function (fn, me) {
-      return function () {
-        return fn.apply(me, arguments);
-      };
-    };
+  var __hasProp = {}.hasOwnProperty,
+          __extends = function (child, parent) {
+            for (var key in parent) {
+              if (__hasProp.call(parent, key))
+                child[key] = parent[key];
+            }
+            function ctor() {
+              this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor();
+            child.__super__ = parent.prototype;
+            return child;
+          };
+
+  ContentEdit.TagNames.get().register(ContentEdit.Text, 'address', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'a');
+
   ContentEdit.Region = (function (_super) {
     __extends(Region, _super);
 
@@ -4976,8 +4963,8 @@
     Region.prototype.isMounted = function () {
       return true;
     };
-    
-    Region.prototype.type = function() {
+
+    Region.prototype.type = function () {
       return 'Region';
     };
 
@@ -5002,7 +4989,7 @@
     return Region;
 
   })(ContentEdit.NodeCollection);
-  
+
 })(this);
 /* 
  * To change this license header, choose License Headers in Project Properties.
@@ -7707,27 +7694,6 @@
   _EditorApp = (function (superClass) {
     extend(_EditorApp, superClass);
 
-// Listen for elements being mounted
-    /*ContentEdit.Root.get().bind('mount', function (element) {
-     var i, inputs;
-     
-     // We're only interested in elements that support content
-     if (element.content === undefined) {
-     return;
-     }
-     
-     // Search for inputs within the newely mounted element
-     inputs = element.domElement().querySelectorAll('input');
-     for (i = 0; i < inputs.length; i++) {
-     console.log(inputs[i])
-     // Prevent the propagation of the `keydown` event to the parent of the input 
-     inputs[i].addEventListener('keydown', function (ev) {
-     console.log(ev);
-     ev.stopPropagation();
-     });
-     }
-     });*/
-
     function _EditorApp() {
       _EditorApp.__super__.constructor.call(this);
       this.history = null;
@@ -7795,34 +7761,6 @@
         return;
       }
       this.mount();
-      /*this._ignition = new ContentTools.IgnitionUI();
-       this.attach(this._ignition);
-       this._ignition.bind('start', (function (_this) {
-       return function () {
-       return _this.start();
-       };
-       })(this));
-       this._ignition.bind('stop', (function (_this) {
-       return function (save) {
-       var focused;
-       focused = ContentEdit.Root.get().focused();
-       if (focused && focused._syncContent !== void 0) {
-       focused._syncContent();
-       }
-       if (save) {
-       _this.save();
-       } else {
-       if (!_this.revert()) {
-       _this._ignition.changeState('editing');
-       return;
-       }
-       }
-       return _this.stop();
-       };
-       })(this));
-       if (this._domRegions.length) {
-       this._ignition.show();
-       }*/
       this._toolbox = new ContentTools.ToolboxUI(ContentTools.DEFAULT_TOOLS);
       this.attach(this._toolbox);
       this._inspector = new ContentTools.InspectorUI();
@@ -8154,10 +8092,6 @@
       this._state = ContentTools.EditorApp.EDITING;
       this._toolbox.show();
       this._inspector.show();
-      //var toolBoxRect = this._toolbox._domElement.getBoundingClientRect();
-      //var inspectorRect = this._inspector._domElement.getBoundingClientRect();
-      //this.contentContainer.style.marginTop = toolBoxRect.height + 'px';
-      //this._domRegions[0].style.marginTop = toolBoxRect.height + inspectorRect.height + 'px';
       return this.busy(false);
     };
 
@@ -8288,7 +8222,6 @@
     };
 
     return EditorApp;
-
   })();
 
 }).call(this);
@@ -9632,51 +9565,45 @@
     child.prototype = new ctor();
     child.__super__ = parent.prototype;
     return child;
-  },
-    hasProp = {}.hasOwnProperty;
+  }, hasProp = {}.hasOwnProperty;
 
-  ContentTools.Tools.Heading = (function (superClass) {
-    extend(Heading, superClass);
+  ContentTools.Tool = (function () {
+    function Tool() {}
 
-    function Heading() {
-      return Heading.__super__.constructor.apply(this, arguments);
-    }
+    Tool.label = 'Tool';
 
-    ContentTools.ToolShelf.stow(Heading, 'heading');
+    Tool.icon = 'tool';
 
-    Heading.label = 'Heading';
-
-    Heading.icon = 'heading';
-
-    Heading.tagName = 'h1';
-
-    Heading.canApply = function (element, selection) {
-      return element.content !== void 0 && element.parent().type() === 'Region';
+    Tool.canApply = function (element, selection) {
+      return false;
     };
 
-    Heading.apply = function (element, selection, callback) {
-      var content, insertAt, parent, textElement;
-      element.storeState();
-      if (element.type() === 'PreText') {
-        content = element.content.html().replace(/&nbsp;/g, ' ');
-        textElement = new ContentEdit.Text(this.tagName, {}, content);
-        parent = element.parent();
-        insertAt = parent.children.indexOf(element);
-        parent.detach(element);
-        parent.attach(textElement, insertAt);
-        element.blur();
-        textElement.focus();
-        textElement.selection(selection);
-      } else {
-        element.tagName(this.tagName);
-        element.restoreState();
+    Tool.isApplied = function (element, selection) {
+      return false;
+    };
+
+    Tool.apply = function (element, selection, callback) {
+      throw new Error('Not implemented');
+    };
+
+    Tool._insertAt = function (element) {
+      var insertIndex, insertNode;
+      insertNode = element;
+      if (insertNode.parent().type() !== 'Region') {
+        insertNode = element.closest(function (node) {
+          return node.parent().type() === 'Region';
+        });
       }
-      return callback(true);
+      insertIndex = insertNode.parent().children.indexOf(insertNode) + 1;
+      return [
+        insertNode,
+        insertIndex
+      ];
     };
 
-    return Heading;
+    return Tool;
 
-  })(ContentTools.Tool);
+  })();
 
   ContentTools.Tools.HeadingTwo = (function (superClass) {
     extend(HeadingTwo, superClass);
@@ -9706,9 +9633,29 @@
 
     ContentTools.ToolShelf.stow(HeadingThree, 'heading3');
 
-    HeadingThree.label = 'Subheading';
-    HeadingThree.icon = 'heading-3';
-    HeadingThree.tagName = 'h3';
+    HeadingThree.label = 'Link';
+    HeadingThree.icon = 'link';
+    HeadingThree.tagName = 'a';
+
+    HeadingThree.apply = function (element, selection, callback) {
+      var content, insertAt, parent, textElement;
+      element.storeState();
+      if (element.type() === 'PreText') {
+        content = element.content.html().replace(/&nbsp;/g, ' ');
+        textElement = new HTMLString.Tag(this.tagName, {href: ""});
+        parent = element.parent();
+        insertAt = parent.children.indexOf(element);
+        parent.detach(element);
+        parent.attach(textElement, insertAt);
+        element.blur();
+        textElement.focus();
+        textElement.selection(selection);
+      } else {
+        element.tagName(this.tagName);
+        element.restoreState();
+      }
+      return callback(true);
+    };
 
     return HeadingThree;
 
@@ -9741,9 +9688,9 @@
 
     var addContentFieldBar = function (element, initValue) {
       var container = document.createElement("span"),
-        input = document.createElement("input"),
-        removeButton = document.createElement("div"),
-        title = document.createElement("p");
+              input = document.createElement("input"),
+              removeButton = document.createElement("div"),
+              title = document.createElement("p");
 
       container.className = "ew-content-field__bar";
       container.setAttribute("contenteditable", false);
@@ -9796,19 +9743,11 @@
       app._contentContainer.appendChild(container);
 
       var parentRect = app._contentContainer.getBoundingClientRect(),
-        rect = element._domElement.getBoundingClientRect();
+              rect = element._domElement.getBoundingClientRect();
 
       container.style.top = rect.top - parentRect.top + "px";
       container.style.left = rect.left - parentRect.left + "px";
       container.style.width = rect.width + "px";
-
-      /*ContentEdit.Root.get().bind('update-position', function () {
-       parentRect = app._contentContainer.getBoundingClientRect();
-       rect = element._domElement.getBoundingClientRect();
-       container.style.top = rect.top - parentRect.top + "px";
-       container.style.left = rect.left - parentRect.left + "px";
-       container.style.width = rect.width + "px";
-       });*/
 
       var oldRect = {};
       var cache = {};
@@ -9842,16 +9781,6 @@
 
       updatePosition();
 
-      /*ContentEdit.Root.get().bind('region-ready', function () {
-       parentRect = app._contentContainer.getBoundingClientRect();
-       rect = element._domElement.getBoundingClientRect();
-       container.style.top = rect.top - parentRect.top + "px";
-       container.style.left = rect.left - parentRect.left + "px";
-       container.style.width = rect.width + "px";
-       //console.log("dom ready", element);
-       //console.log(app._contentContainer.innerHTML);
-       });*/
-
       element._contentField = container;
 
       return input;
@@ -9878,141 +9807,6 @@
 
   })(ContentTools.Tool);
 
-  /*ContentTools.Tools.Link = (function (superClass) {
-   extend(Link, superClass);
-   
-   function Link() {
-   return Link.__super__.constructor.apply(this, arguments);
-   }
-   
-   ContentTools.ToolShelf.stow(Link, 'link');
-   
-   Link.label = 'Link';
-   
-   Link.icon = 'link';
-   
-   Link.tagName = 'a';
-   
-   Link.getHref = function (element, selection) {
-   var c, from, j, k, len, len1, ref, ref1, ref2, selectedContent, tag, to;
-   if (element.constructor.name === 'Image') {
-   if (element.a) {
-   return element.a.href;
-   }
-   } else {
-   ref = selection.get(), from = ref[0], to = ref[1];
-   selectedContent = element.content.slice(from, to);
-   ref1 = selectedContent.characters;
-   for (j = 0, len = ref1.length; j < len; j++) {
-   c = ref1[j];
-   if (!c.hasTags('a')) {
-   continue;
-   }
-   ref2 = c.tags();
-   for (k = 0, len1 = ref2.length; k < len1; k++) {
-   tag = ref2[k];
-   if (tag.name() === 'a') {
-   return tag.attr('href');
-   }
-   }
-   }
-   }
-   return '';
-   };
-   
-   Link.canApply = function (element, selection) {
-   if (element.constructor.name === 'Image') {
-   return true;
-   } else {
-   return Link.__super__.constructor.canApply.call(this, element, selection);
-   }
-   };
-   
-   Link.isApplied = function (element, selection) {
-   if (element.constructor.name === 'Image') {
-   return element.a;
-   } else {
-   return Link.__super__.constructor.isApplied.call(this, element, selection);
-   }
-   };
-   
-   Link.apply = function (element, selection, callback) {
-   var allowScrolling, app, applied, dialog, domElement, from, measureSpan, modal, rect, ref, selectTag, to, transparent;
-   applied = false;
-   if (element.constructor.name === 'Image') {
-   rect = element.domElement().getBoundingClientRect();
-   } else {
-   element.storeState();
-   selectTag = new HTMLString.Tag('span', {
-   'class': 'ct--puesdo-select'
-   });
-   ref = selection.get(), from = ref[0], to = ref[1];
-   element.content = element.content.format(from, to, selectTag);
-   element.updateInnerHTML();
-   domElement = element.domElement();
-   measureSpan = domElement.getElementsByClassName('ct--puesdo-select');
-   rect = measureSpan[0].getBoundingClientRect();
-   }
-   app = ContentTools.EditorApp.get();
-   modal = new ContentTools.ModalUI(transparent = true, allowScrolling = true);
-   modal.bind('click', function () {
-   this.unmount();
-   dialog.hide();
-   if (element.content) {
-   element.content = element.content.unformat(from, to, selectTag);
-   element.updateInnerHTML();
-   element.restoreState();
-   }
-   return callback(applied);
-   });
-   dialog = new ContentTools.LinkDialog(this.getHref(element, selection));
-   
-   
-   dialog.bind('save', function (href) {
-   var a;
-   dialog.unbind('save');
-   applied = true;
-   if (element.constructor.name === 'Image') {
-   if (href) {
-   element.a = {
-   href: href
-   };
-   } else {
-   element.a = null;
-   }
-   } else {
-   element.content = element.content.unformat(from, to, 'a');
-   if (href) {
-   a = new HTMLString.Tag('a', {
-   href: href
-   });
-   element.content = element.content.format(from, to, a);
-   }
-   element.updateInnerHTML();
-   element.taint();
-   }
-   return modal.trigger('click');
-   });
-   app.attach(modal);
-   
-   modal.show();
-   app.attach(dialog);
-   dialog.show();
-   var containerRect = app._editorContainer.getBoundingClientRect();
-   var dialogRect = dialog._domElement.getBoundingClientRect();
-   var x = (rect.left + (rect.width / 2)) - containerRect.left - (dialogRect.width / 2),
-   y = rect.top - containerRect.top;
-   dialog.position([
-   x > 0 ? x : 0,
-   y > 0 ? y : 0
-   ]);
-   return true;
-   };
-   
-   return Link;
-   
-   })(ContentTools.Tools.Bold);*/
-
   ContentTools.Tools.Link = (function (superClass) {
     extend(Link, superClass);
 
@@ -10034,6 +9828,8 @@
         if (element.a) {
           return element.a[attrName];
         }
+      } else if (element._tagName === "a") {
+        return element.domElement()[attrName];
       } else {
         ref = selection.get(), from = ref[0], to = ref[1];
         selectedContent = element.content.slice(from, to);
@@ -10058,14 +9854,19 @@
     Link.canApply = function (element, selection) {
       if (element.type() === 'Image') {
         return true;
+      } else if (element._tagName === "a") {
+        return true;
       } else {
         return Link.__super__.constructor.canApply.call(this, element, selection);
       }
+      return false;
     };
 
     Link.isApplied = function (element, selection) {
       if (element.type() === 'Image') {
         return element.a;
+      } else if (element._tagName === "a") {
+        return true;
       } else {
         return Link.__super__.constructor.isApplied.call(this, element, selection);
       }
@@ -10075,6 +9876,8 @@
       var allowScrolling, app, applied, dialog, domElement, from, measureSpan, modal, rect, ref, selectTag, to, transparent;
       applied = false;
       if (element.type() === 'Image') {
+        rect = element.domElement().getBoundingClientRect();
+      } else if (element._tagName === "a") {
         rect = element.domElement().getBoundingClientRect();
       } else {
         element.storeState();
@@ -10146,6 +9949,9 @@
           }
           element.unmount();
           element.mount();
+        } else if (element._tagName === "a") {
+          element.attr("href", linkAttr.href);
+          element.attr("target", linkAttr.target);
         } else {
           element.content = element.content.unformat(from, to, 'a');
           if (linkAttr.href) {
@@ -10165,7 +9971,7 @@
       var containerRect = app._editorContainer.getBoundingClientRect();
       var dialogRect = dialog._domElement.getBoundingClientRect();
       var x = (rect.left + (rect.width / 2)) - containerRect.left - (dialogRect.width / 2),
-        y = rect.top - containerRect.top;
+              y = rect.top - containerRect.top;
       dialog.position([
         x > 0 ? x : 0,
         y > 0 ? y : 0

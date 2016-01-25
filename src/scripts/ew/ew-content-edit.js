@@ -2,36 +2,23 @@
  * Overwrite Region to add `region-ready` event
  */
 (function () {
-  var _Root, _TagNames, _mergers,
-    __slice = [
-    ].slice,
-    __indexOf = [
-    ].indexOf || function (item) {
-    for (var i = 0, l = this.length; i < l; i++) {
-      if (i in this && this[i] === item)
-        return i;
-    }
-    return -1;
-  },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function (child, parent) {
-      for (var key in parent) {
-        if (__hasProp.call(parent, key))
-          child[key] = parent[key];
-      }
-      function ctor() {
-        this.constructor = child;
-      }
-      ctor.prototype = parent.prototype;
-      child.prototype = new ctor();
-      child.__super__ = parent.prototype;
-      return child;
-    },
-    __bind = function (fn, me) {
-      return function () {
-        return fn.apply(me, arguments);
-      };
-    };
+  var __hasProp = {}.hasOwnProperty,
+          __extends = function (child, parent) {
+            for (var key in parent) {
+              if (__hasProp.call(parent, key))
+                child[key] = parent[key];
+            }
+            function ctor() {
+              this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor();
+            child.__super__ = parent.prototype;
+            return child;
+          };
+
+  ContentEdit.TagNames.get().register(ContentEdit.Text, 'address', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'a');
+
   ContentEdit.Region = (function (_super) {
     __extends(Region, _super);
 
@@ -77,8 +64,8 @@
     Region.prototype.isMounted = function () {
       return true;
     };
-    
-    Region.prototype.type = function() {
+
+    Region.prototype.type = function () {
       return 'Region';
     };
 
@@ -103,5 +90,5 @@
     return Region;
 
   })(ContentEdit.NodeCollection);
-  
+
 })(this);

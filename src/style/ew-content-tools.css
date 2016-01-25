@@ -1881,21 +1881,15 @@ video.align-right,
   -moz-box-sizing: border-box;
   box-sizing: border-box
 }
+
 .ct--highlight {
   outline: 4px solid rgba(243, 156, 18, 0.25);
-  -webkit-animation: highlight 0.5s ease-in;
-  -moz-animation: highlight 0.5s ease-in;
-  animation: highlight 0.5s ease-in;
-  -webkit-animation-iteration-count: infinite;
-  -moz-animation-iteration-count: infinite;
-  animation-iteration-count: infinite;
-  -webkit-animation-fill-mode: forwards;
-  -moz-animation-fill-mode: forwards;
-  animation-fill-mode: forwards
 }
+
 .ct--no-scroll {
   overflow: hidden
 }
+
 .ct--puesdo-select {
   background: rgba(0, 0, 0, 0.1)
 }
@@ -1980,6 +1974,7 @@ video.align-right,
   opacity: .6;
   content: '\ea0f'
 }
+
 .ew-content-field__remove:hover:before {
   opacity: .9;
 }
@@ -1993,9 +1988,8 @@ video.align-right,
   line-height: 40px;
   text-align: center;
   width: 40px;
-
-
 }
+
 .ct-widget  .ct-anchored-dialog__target-button:before {
   color: #aaa;
   content: '\ea7d';
@@ -2009,4 +2003,6 @@ video.align-right,
   background: #2cc36b;
 }
 
-
+a.ce-element--type-text {
+  display: block;
+}

@@ -21,27 +21,6 @@
   _EditorApp = (function (superClass) {
     extend(_EditorApp, superClass);
 
-// Listen for elements being mounted
-    /*ContentEdit.Root.get().bind('mount', function (element) {
-     var i, inputs;
-     
-     // We're only interested in elements that support content
-     if (element.content === undefined) {
-     return;
-     }
-     
-     // Search for inputs within the newely mounted element
-     inputs = element.domElement().querySelectorAll('input');
-     for (i = 0; i < inputs.length; i++) {
-     console.log(inputs[i])
-     // Prevent the propagation of the `keydown` event to the parent of the input 
-     inputs[i].addEventListener('keydown', function (ev) {
-     console.log(ev);
-     ev.stopPropagation();
-     });
-     }
-     });*/
-
     function _EditorApp() {
       _EditorApp.__super__.constructor.call(this);
       this.history = null;
@@ -109,34 +88,6 @@
         return;
       }
       this.mount();
-      /*this._ignition = new ContentTools.IgnitionUI();
-       this.attach(this._ignition);
-       this._ignition.bind('start', (function (_this) {
-       return function () {
-       return _this.start();
-       };
-       })(this));
-       this._ignition.bind('stop', (function (_this) {
-       return function (save) {
-       var focused;
-       focused = ContentEdit.Root.get().focused();
-       if (focused && focused._syncContent !== void 0) {
-       focused._syncContent();
-       }
-       if (save) {
-       _this.save();
-       } else {
-       if (!_this.revert()) {
-       _this._ignition.changeState('editing');
-       return;
-       }
-       }
-       return _this.stop();
-       };
-       })(this));
-       if (this._domRegions.length) {
-       this._ignition.show();
-       }*/
       this._toolbox = new ContentTools.ToolboxUI(ContentTools.DEFAULT_TOOLS);
       this.attach(this._toolbox);
       this._inspector = new ContentTools.InspectorUI();
@@ -468,10 +419,6 @@
       this._state = ContentTools.EditorApp.EDITING;
       this._toolbox.show();
       this._inspector.show();
-      //var toolBoxRect = this._toolbox._domElement.getBoundingClientRect();
-      //var inspectorRect = this._inspector._domElement.getBoundingClientRect();
-      //this.contentContainer.style.marginTop = toolBoxRect.height + 'px';
-      //this._domRegions[0].style.marginTop = toolBoxRect.height + inspectorRect.height + 'px';
       return this.busy(false);
     };
 
@@ -602,7 +549,6 @@
     };
 
     return EditorApp;
-
   })();
 
 }).call(this);
