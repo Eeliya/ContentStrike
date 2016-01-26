@@ -288,9 +288,9 @@ video.align-right,
   -webkit-transition-property: opacity;
   -moz-transition-property: opacity;
   transition-property: opacity;
-  -webkit-transition-duration: 0.25s;
-  -moz-transition-duration: 0.25s;
-  transition-duration: 0.25s;
+  -webkit-transition-duration: 0.1s;
+  -moz-transition-duration: 0.1s;
+  transition-duration: 0.1s;
   -webkit-transition-timing-function: ease-in;
   -moz-transition-timing-function: ease-in;
   transition-timing-function: ease-in
@@ -300,9 +300,9 @@ video.align-right,
   -webkit-transition-property: opacity;
   -moz-transition-property: opacity;
   transition-property: opacity;
-  -webkit-transition-duration: 0.25s;
-  -moz-transition-duration: 0.25s;
-  transition-duration: 0.25s;
+  -webkit-transition-duration: 0.2s;
+  -moz-transition-duration: 0.2s;
+  transition-duration: 0.2s;
   -webkit-transition-timing-function: ease-in;
   -moz-transition-timing-function: ease-in;
   transition-timing-function: ease-in
@@ -560,10 +560,10 @@ video.align-right,
   text-align: center
 }
 .ct-widget .ct-control-group--left {
-  float: right
+  float: left;
 }
 .ct-widget .ct-control-group--right {
-  float: left
+  float: right;
 }
 .ct-widget .ct-control {
   margin-left: 16px;
@@ -729,7 +729,11 @@ video.align-right,
   background: #ccc
 }
 .ct-widget .ct-control--upload {
-  overflow: hidden
+  overflow: hidden;
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  margin: -16px -50px;
 }
 .ct-widget.ct-image-dialog--empty .ct-progress-bar,
 .ct-widget.ct-image-dialog--empty .ct-control--rotate-ccw,
@@ -745,12 +749,14 @@ video.align-right,
 .ct-widget.ct-image-dialog--uploading .ct-control--crop,
 .ct-widget.ct-image-dialog--uploading .ct-control--upload,
 .ct-widget.ct-image-dialog--uploading .ct-control--insert,
-.ct-widget.ct-image-dialog--uploading .ct-control--clear {
+.ct-widget.ct-image-dialog--uploading .ct-control--clear,
+.ct-widget.ct-image-dialog--uploading .ct-control--fetch {
   display: none
 }
 .ct-widget.ct-image-dialog--populated .ct-progress-bar,
 .ct-widget.ct-image-dialog--populated .ct-control--upload,
-.ct-widget.ct-image-dialog--populated .ct-control--cancel {
+.ct-widget.ct-image-dialog--populated .ct-control--cancel,
+.ct-widget.ct-image-dialog--populated .ct-control--fetch {
   display: none
 }
 .ct-widget .ct-image-dialog__view {
@@ -851,7 +857,7 @@ video.align-right,
   color: white;
   content: '\ea98'
 }
-.ct-widget .ct-video-dialog__input {
+.ct-widget .ct-video-dialog__input, .ct-widget .ct-image-dialog__input  {
   border: none;
   border-bottom: 1px solid #eee;
   height: 32px;
@@ -864,7 +870,8 @@ video.align-right,
   vertical-align: top;
   width: 564px
 }
-.ct-widget .ct-video-dialog__input:focus {
+
+.ct-widget .ct-video-dialog__input:focus, .ct-widget .ct-image-dialog__input:focus {
   border-bottom: 1px solid #e1e1e1
 }
 .ct-widget.ct-anchored-dialog {
@@ -1313,10 +1320,10 @@ video.align-right,
 }
 
 .ct-widget.ct-top-inspector {
-  background: #d6d6d6;
-  height: 34px;
+  background: #d0d0d0;
+  height: 24px;
   overflow: hidden;
-  padding: 5px 15px 0;
+  padding: 0 15px 0;
   width: 100%;
   display: block;
 }
@@ -1335,7 +1342,7 @@ video.align-right,
   margin-right: 16px;
   text-align: center;
   font-family: 'icon';
-  font-size: 16px;
+  font-size: 19px;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -1347,17 +1354,17 @@ video.align-right,
 }
 .ct-widget .ct-tag {
   background-color: #2980b9;
-  border-radius: 2px 0 0 2px;
+  border-radius: 0;
   color: white;
   cursor: pointer;
   float: left;
-  font-weight: bold;
+  font-weight: normal;
   height: 24px;
   line-height: 24px;
   margin-left: 24px;
   padding: 0 8px;
   position: relative;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35)
+  text-transform: uppercase;
 }
 .ct-widget .ct-tag:after {
   border-style: solid;
@@ -1372,7 +1379,6 @@ video.align-right,
   right: -24px;
   position: absolute;
   width: 24px;
-  -moz-transform: scale(0.9999)
 }
 .ct-widget .ct-tag:first-child {
   margin-left: 0
@@ -1596,7 +1602,7 @@ video.align-right,
 .ct-widget.ct-top-toolbox {
   background: #ddd;
   left: 0;
-  padding: 8px 0;
+  padding: 16px 0 0;
   top: 0;
   right: 0;
   overflow: hidden;
@@ -1649,48 +1655,35 @@ video.align-right,
   border-radius: 2px;
   color: white;
   content: attr(data-tooltip);
-  display: block;
-  -webkit-hyphens: auto;
-  -moz-hyphens: auto;
-  -ms-hyphens: auto;
+  display: none;
   hyphens: auto;
   left: -34px;
   line-height: 20px;
-  opacity: 0;
+  opacity: .7;
   padding: 0 8px;
   position: absolute;
-  bottom: 24px;
+  bottom: 28px;
   font-family: arial, sans-serif;
   font-size: 12px;
   line-height: 20px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /*visibility: hidden;*/
   width: 100px;
   word-break: break-word;
+
 }
 .ct-widget .ct-tool:hover:after {
-  opacity: 0.8;
-  visibility: visible;
-  /*-webkit-transition-property: opacity;
-  -moz-transition-property: opacity;
-  transition-property: opacity;
-  -webkit-transition-duration: 0s;
-  -moz-transition-duration: 0s;
-  transition-duration: 0s;
-  -webkit-transition-timing-function: ease-in;
-  -moz-transition-timing-function: ease-in;
-  transition-timing-function: ease-in;
-  -webkit-transition-delay: 2s;
-  -moz-transition-delay: 2s;
-  transition-delay: 2s*/
+  display:block;
+  z-index: 1;
 }
+
 .ct-widget .ct-tool:before {
   font-family: 'icon';
   line-height: 18px;
   vertical-align: middle;
   height: 32px;
 }
+
 .ct-widget .ct-tool:nth-child(3n) {
   margin-right: 0
 }
@@ -1721,11 +1714,19 @@ video.align-right,
 .ct-widget .ct-tool--bold:before {
   content: "\ea62"
 }
+
 .ct-widget .ct-tool--content-field:before {
   font-family: arial, sans-serif;
   content: "CF";
   font-weight: bold
 }
+
+.ct-widget .ct-tool--ew-media:before {
+  font-family: arial, sans-serif;
+  content: "M";
+  font-weight: bold
+}
+
 .ct-widget .ct-tool--heading:before {
   font-family: arial, sans-serif;
   content: "H";
@@ -1914,6 +1915,8 @@ video.align-right,
   padding-top: 35px;
   padding-left: 5px;
   padding-right: 5px;
+  margin-left: -5px;
+  margin-right: -5px;
 }
 
 .ew-content-field.ce-element--over {
@@ -2005,4 +2008,18 @@ video.align-right,
 
 a.ce-element--type-text {
   display: block;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
 }

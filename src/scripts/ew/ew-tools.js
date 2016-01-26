@@ -51,6 +51,53 @@
 
   })();
 
+  ContentTools.Tools.Heading = (function (superClass) {
+    extend(Heading, superClass);
+
+    function Heading() {
+      return Heading.__super__.constructor.apply(this, arguments);
+    }
+
+    ContentTools.ToolShelf.stow(Heading, 'heading');
+
+    Heading.label = 'Heading';
+
+    Heading.icon = 'heading';
+
+    Heading.tagName = 'h1';
+
+    Heading.canApply = function (element, selection) {
+      return element.content !== void 0 && element.parent().type() === 'Region';
+    };
+
+    Heading.isApplied = function (element, selection) {
+      return element._tagName === this.tagName;
+    };
+
+    Heading.apply = function (element, selection, callback) {
+      var content, insertAt, parent, textElement;
+      element.storeState();
+      if (element.type() === 'PreText') {
+        content = element.content.html().replace(/&nbsp;/g, ' ');
+        textElement = new ContentEdit.Text(this.tagName, {}, content);
+        parent = element.parent();
+        insertAt = parent.children.indexOf(element);
+        parent.detach(element);
+        parent.attach(textElement, insertAt);
+        element.blur();
+        textElement.focus();
+        textElement.selection(selection);
+      } else {
+        element.tagName(this.tagName);
+        element.restoreState();
+      }
+      return callback(true);
+    };
+
+    return Heading;
+
+  })(ContentTools.Tool);
+
   ContentTools.Tools.HeadingTwo = (function (superClass) {
     extend(HeadingTwo, superClass);
 
@@ -70,25 +117,31 @@
 
   })(ContentTools.Tools.Heading);
 
-  ContentTools.Tools.HeadingThree = (function (superClass) {
-    extend(HeadingThree, superClass);
+  ContentTools.Tools.LinkBlock = (function (superClass) {
+    extend(LinkBlock, superClass);
 
-    function HeadingThree() {
-      return HeadingThree.__super__.constructor.apply(this, arguments);
+    function LinkBlock() {
+      return LinkBlock.__super__.constructor.apply(this, arguments);
     }
 
-    ContentTools.ToolShelf.stow(HeadingThree, 'heading3');
+    ContentTools.ToolShelf.stow(LinkBlock, 'link-block');
 
-    HeadingThree.label = 'Link';
-    HeadingThree.icon = 'link';
-    HeadingThree.tagName = 'a';
+    LinkBlock.label = 'Link';
+    LinkBlock.icon = 'link';
+    LinkBlock.tagName = 'a';
 
-    HeadingThree.apply = function (element, selection, callback) {
+    LinkBlock.canApply = function (element, selection) {
+      return element._domElement.getElementsByTagName("a").length ? false : true;
+    };
+
+    LinkBlock.apply = function (element, selection, callback) {
       var content, insertAt, parent, textElement;
       element.storeState();
       if (element.type() === 'PreText') {
         content = element.content.html().replace(/&nbsp;/g, ' ');
-        textElement = new HTMLString.Tag(this.tagName, {href: ""});
+        textElement = new HTMLString.Tag(this.tagName, {
+          href: ""
+        });
         parent = element.parent();
         insertAt = parent.children.indexOf(element);
         parent.detach(element);
@@ -99,11 +152,54 @@
       } else {
         element.tagName(this.tagName);
         element.restoreState();
+        ContentTools.Tools.Link.apply(element, selection, callback);
       }
       return callback(true);
     };
 
-    return HeadingThree;
+    return LinkBlock;
+  })(ContentTools.Tools.Heading);
+
+  ContentTools.Tools.Paragraph = (function (superClass) {
+    extend(Paragraph, superClass);
+
+    function Paragraph() {
+      return Paragraph.__super__.constructor.apply(this, arguments);
+    }
+
+    ContentTools.ToolShelf.stow(Paragraph, 'paragraph');
+
+    Paragraph.label = 'Paragraph';
+
+    Paragraph.icon = 'paragraph';
+
+    Paragraph.tagName = 'p';
+
+    Paragraph.canApply = function (element, selection) {
+      return element !== void 0;
+    };
+
+    Paragraph.apply = function (element, selection, callback) {
+      var app, forceAdd, paragraph, region;
+      app = ContentTools.EditorApp.get();
+      forceAdd = app.ctrlDown();
+      if (ContentTools.Tools.Heading.canApply(element) && !forceAdd) {
+        return Paragraph.__super__.constructor.apply.call(this, element, selection, callback);
+      } else {
+        if (element.parent().type() !== 'Region') {
+          element = element.closest(function (node) {
+            return node.parent().type() === 'Region';
+          });
+        }
+        region = element.parent();
+        paragraph = new ContentEdit.Text('p');
+        region.attach(paragraph, region.children.indexOf(element) + 1);
+        paragraph.focus();
+        return callback(true);
+      }
+    };
+
+    return Paragraph;
 
   })(ContentTools.Tools.Heading);
 
@@ -134,9 +230,9 @@
 
     var addContentFieldBar = function (element, initValue) {
       var container = document.createElement("span"),
-              input = document.createElement("input"),
-              removeButton = document.createElement("div"),
-              title = document.createElement("p");
+        input = document.createElement("input"),
+        removeButton = document.createElement("div"),
+        title = document.createElement("p");
 
       container.className = "ew-content-field__bar";
       container.setAttribute("contenteditable", false);
@@ -189,7 +285,7 @@
       app._contentContainer.appendChild(container);
 
       var parentRect = app._contentContainer.getBoundingClientRect(),
-              rect = element._domElement.getBoundingClientRect();
+        rect = element._domElement.getBoundingClientRect();
 
       container.style.top = rect.top - parentRect.top + "px";
       container.style.left = rect.left - parentRect.left + "px";
@@ -253,6 +349,74 @@
 
   })(ContentTools.Tool);
 
+  ContentTools.Tools.EWMedia = (function (superClass) {
+    extend(EWMedia, superClass);
+
+    function EWMedia() {
+      return EWMedia.__super__.constructor.apply(this, arguments);
+    }
+
+    ContentTools.ToolShelf.stow(EWMedia, 'ew-media');
+
+    EWMedia.label = 'EW Media';
+
+    EWMedia.icon = 'ew-media';
+
+    EWMedia.tagName = 'p';
+
+    EWMedia.canApply = function (element, selection) {
+      return true;
+    };
+
+    EWMedia.apply = function (element, selection, callback) {
+      var app, forceAdd, paragraph, region;
+      app = ContentTools.EditorApp.get();
+      var imageChooserDialog = EW.createModal({
+        autoOpen: false,
+        class: "center"
+      });
+      imageChooserDialog.append("<div class='form-content'></div><div class='footer-pane row actions-bar action-bar-items' ></div>");
+      $.post("~admin/html/content-management/media.php", {
+        callback: ""
+      },
+      function (data) {
+        imageChooserDialog.find(".form-content:first").append(data);
+        imageChooserDialog.prepend("<h1 class='form-title'>Media</h1>");
+        var bSelectPhoto = EW.addAction("Select Photo", function () {
+          EW.setHashParameter("select-photo", true, "media");
+        }, {
+          display: "none"
+        }).addClass("btn-success");
+        // create handler to track selected
+        var EWhandler = function () {
+          var url = EW.getHashParameter("absUrl", "media");
+          if (url) {
+            bSelectPhoto.comeIn(300);
+          } else {
+            bSelectPhoto.comeOut(200);
+          }
+
+          if (EW.getHashParameter("select-photo", "media")) {
+            EW.setHashParameter("select-photo", null, "media");
+            imageChooserDialog.dispose();
+            //if (EW.getHashParameter("url", "Media"))
+            /*$element.val(EW.getHashParameter("absUrl", "media")).change();
+            $element.attr("data-filename", EW.getHashParameter("filename", "media"));
+            $element.attr("data-file-extension", EW.getHashParameter("fileExtension", "media"));
+            $element.attr("data-url", EW.getHashParameter("url", "media"));*/
+          }
+        };
+        EW.addURLHandler(EWhandler, "media.ImageChooser");
+      });
+
+      imageChooserDialog.open();
+      return callback(true);
+    };
+
+    return EWMedia;
+
+  })(ContentTools.Tool);
+
   ContentTools.Tools.Link = (function (superClass) {
     extend(Link, superClass);
 
@@ -301,7 +465,7 @@
       if (element.type() === 'Image') {
         return true;
       } else if (element._tagName === "a") {
-        return true;
+        return false;
       } else {
         return Link.__super__.constructor.canApply.call(this, element, selection);
       }
@@ -417,7 +581,7 @@
       var containerRect = app._editorContainer.getBoundingClientRect();
       var dialogRect = dialog._domElement.getBoundingClientRect();
       var x = (rect.left + (rect.width / 2)) - containerRect.left - (dialogRect.width / 2),
-              y = rect.top - containerRect.top;
+        y = rect.top - containerRect.top;
       dialog.position([
         x > 0 ? x : 0,
         y > 0 ? y : 0

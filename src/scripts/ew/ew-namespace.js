@@ -20,9 +20,9 @@
       ],
       [
         'heading',
-        'heading2',
-        'heading3',
+        'heading2',        
         'paragraph',
+        'link-block',
         'unordered-list',
         'ordered-list',
         'table',
@@ -32,6 +32,7 @@
       ],
       [
         //'image-link',
+        'ew-media',
         'image',
         'video',
         'preformatted',
