@@ -376,7 +376,7 @@
         class: "center"
       });
       imageChooserDialog.append("<div class='form-content'></div><div class='footer-pane row actions-bar action-bar-items' ></div>");
-      $.post("~admin/html/content-management/media.php", {
+      $.post("~admin/html/content-management/link-chooser-media.php", {
         callback: ""
       },
       function (data) {
