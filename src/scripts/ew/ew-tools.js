@@ -375,13 +375,13 @@
         autoOpen: false,
         class: "center"
       });
-      imageChooserDialog.append("<div class='form-content no-footer'></div>");
+      imageChooserDialog.append("<div class='form-content tabs-bar no-footer'></div>");
       $.post("~admin/html/content-management/link-chooser-media.php", {
         callback: ""
       },
       function (data) {
         imageChooserDialog.find(".form-content:first").append(data);
-        imageChooserDialog.prepend("<div class='header-pane row'><h1 class='form-title'>Media</h1></div>");
+        imageChooserDialog.prepend("<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1></div>");
         var bSelectPhoto = EW.addAction("Select Photo", function () {
           EW.setHashParameter("select-photo", true, "media");
         }, {
