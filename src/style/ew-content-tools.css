@@ -60,7 +60,7 @@ and open the template in the editor.
 }
 .ce-element--type-image {
   background-position: 0 0;
-  background-size: cover
+  background-size: cover;
 }
 .ce-element--type-video {
   background: #333 url("images/video.png") center center no-repeat
@@ -84,7 +84,7 @@ and open the template in the editor.
 .ce-element--dragging.ce-element--type-video {
   background-color: #333 !important;
   opacity: 1.0;
-  outline-color: rgba(51, 51, 51, 0.1) !important
+  outline-color: rgba(51, 51, 51, 0.1) !important; 
 }
 .ce-element--drop {
   background: rgba(243, 156, 18, 0.5) none 0 0 repeat !important
