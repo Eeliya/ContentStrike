@@ -1948,6 +1948,7 @@ video.align-right,
   outline: none;
   margin: 0;
   border-radius: 0;
+  float: left;
 }
 
 .ew-content-field__input:focus{
