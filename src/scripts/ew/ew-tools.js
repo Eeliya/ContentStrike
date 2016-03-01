@@ -207,12 +207,12 @@
 
   ContentTools.Tools.ContentFields = (function (superClass) {
     extend(ContentField, superClass);
-    
+
     function ContentField() {
       return ContentField.__super__.constructor.apply(this, arguments);
     }
 
-    var addImage = function (element,callback) {
+    var setImage = function (element, callback) {
       var app, forceAdd, paragraph, region;
       app = ContentTools.EditorApp.get();
       var imageChooserDialog = EW.createModal({
@@ -228,12 +228,13 @@
         var ref = ContentField._insertAt(element), node = ref[0], index = ref[1];
         imageChooserDialog[0].selectMedia = function (image) {
           var image = new ContentEdit.Image(image);
+
           node.parent().attach(image, index);
-          element._domElement.parentNode.removeChild(element._domElement);
-          element._domElement = image._domElement;
-          element.addCSSClass('ew-content-field');
-          image.focus();
+          node.parent().detach(element);
+
+          toContentField(image, 'testy');
           imageChooserDialog.dispose();
+          //element.updatePosition();
         };
 
       });
@@ -249,22 +250,28 @@
 
     ContentEdit.Root.get().bind('mount', function (element) {
       if (element.attr("content-field")) {
-        addContentFieldBar(element, element.attr("content-field"));
+        toContentField(element, element.attr("content-field"));
       }
     });
 
     ContentEdit.Root.get().bind('unmount', function (element) {
-      if (element._contentField && element._contentField.parentNode) {
-        element._contentField.parentNode.removeChild(element._contentField);
+      if (element._contentField && element._contentField.element.parentNode) {
+        element._contentField.element.parentNode.removeChild(element._contentField.element);
       }
     });
 
-    var addContentFieldBar = function (element, initValue) {
+    var toContentField = function (element, initValue) {
       var container = document.createElement("span"),
               input = document.createElement("input"),
               removeButton = document.createElement("div"),
               img = document.createElement("button"),
               title = document.createElement("p");
+
+      var ewContentField = {
+        element: container,
+        input: input,
+        title: title
+      };
 
       container.className = "ew-content-field__bar";
       container.setAttribute("contenteditable", false);
@@ -281,7 +288,7 @@
       container.appendChild(img);
 
       img.addEventListener('click', function (e) {
-        addImage(element);
+        setImage(element);
       });
 
       input.addEventListener("keydown", function (e) {
@@ -333,7 +340,7 @@
 
       var oldRect = {};
       var cache = {};
-      var updatePosition = function () {
+      element.updatePosition = function () {
         cache = element._domElement.getBoundingClientRect();
 
         if (oldRect.left !== cache.left) {
@@ -355,21 +362,21 @@
 
         setTimeout(function () {
           if (element._domElement && app._domElement) {
-            updatePosition();
+            element.updatePosition();
           }
         }, 100);
 
       };
 
-      updatePosition();
+      element.updatePosition();
 
-      element._contentField = container;
+      element._contentField = ewContentField;
 
       return input;
     };
 
     ContentField.canApply = function (element, selection) {
-      return element.content !== void 0 && element.parent().constructor.name === 'Region';
+      return element.parent().constructor.name === 'Region';
     };
 
     //var oldContentField = null;
@@ -377,7 +384,7 @@
       if (element.attr("content-field")) {
 
       } else {
-        addContentFieldBar(element, "").focus();
+        toContentField(element, "").focus();
       }
     };
 
