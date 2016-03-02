@@ -228,13 +228,10 @@
         var ref = ContentField._insertAt(element), node = ref[0], index = ref[1];
         imageChooserDialog[0].selectMedia = function (image) {
           var image = new ContentEdit.Image(image);
-
           node.parent().attach(image, index);
           node.parent().detach(element);
-
-          toContentField(image, 'testy');
+          toContentField(image, element.attr('content-field'));
           imageChooserDialog.dispose();
-          //element.updatePosition();
         };
 
       });
@@ -325,6 +322,7 @@
         container.parentNode.removeChild(container);
       });
       input.value = title.innerHTML = initValue;
+      element.attr("content-field", initValue);
       element.addCSSClass("ew-content-field");
 
       container.style.position = "absolute";

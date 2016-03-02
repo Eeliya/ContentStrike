@@ -98,6 +98,7 @@
 
     function Image(attributes, a) {
       var size;
+
       Image.__super__.constructor.call(this, 'img', attributes);
       this.a = a ? a : null;
       size = this.size();
@@ -143,12 +144,16 @@
 
     Image.prototype.mount = function () {
       var classes, style;
+
       this._domElement = document.createElement('div');
+      if (this._attributes['content-field']) {
+        this._domElement.setAttribute('content-field', this._attributes['content-field']);
+      }
       var img = document.createElement('img');
 
       img.style.display = 'block';
       img.style.height = '100%';
-      
+
       classes = '';
       if (this.a && this.a['class']) {
         classes += ' ' + this.a['class'];
@@ -168,7 +173,6 @@
       this._domElement.setAttribute('style', style);
       img.src = this._attributes['src'];
       this._domElement.appendChild(img);
-      console.log(this);
       return Image.__super__.mount.call(this);
     };
 

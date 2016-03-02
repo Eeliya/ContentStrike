@@ -1924,6 +1924,7 @@ video.align-right,
   margin: 25px auto;
   background-position-y: 35px;
   max-height: 500px;
+  max-width: 100%;
 }
 
 .ce-element--type-image.ew-content-field > img {
