@@ -152,7 +152,7 @@
       var img = document.createElement('img');
 
       img.style.display = 'block';
-      img.style.height = '100%';
+      //img.style.height = '100%';
 
       classes = '';
       if (this.a && this.a['class']) {
@@ -168,7 +168,7 @@
         style += "width:" + this._attributes['width'] + "px;";
       }
       if (this._attributes['height']) {
-        style += "height:" + this._attributes['height'] + "px;";
+        //style += "height:" + this._attributes['height'] + "px;";
       }
       this._domElement.setAttribute('style', style);
       img.src = this._attributes['src'];

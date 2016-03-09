@@ -1919,7 +1919,16 @@ video.align-right,
   box-sizing: border-box;
 }
 
-.ce-element--type-image.ew-content-field {
+.ce-element--type-image {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.ce-element--type-image > img {
+  max-width: 100%;
+}
+
+.ce-element--type-image.ew-content-field { 
   padding: 0;
   margin: 25px auto;
   background-position-y: 35px;

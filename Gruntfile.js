@@ -117,7 +117,7 @@
                 build: {
                     expand: true,
                     cwd: 'build/',
-                    src: ['**'],
+                    src: ['**/*'],
                     dest: "C:/xampp/htdocs/EverythingWidget/packages/admin/public/js/ContentStrike/"
                 }
             },
