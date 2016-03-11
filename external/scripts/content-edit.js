@@ -84,7 +84,7 @@
 }).call(this);
 
 (function() {
-  var ALPHA_CHARS, ALPHA_NUMERIC_CHARS, ATTR_DELIM, ATTR_ENTITY_DOUBLE_DELIM, ATTR_ENTITY_NO_DELIM, ATTR_ENTITY_SINGLE_DELIM, ATTR_NAME, ATTR_NAME_FIND_VALUE, ATTR_OR_TAG_END, ATTR_VALUE_DOUBLE_DELIM, ATTR_VALUE_NO_DELIM, ATTR_VALUE_SINGLE_DELIM, CHAR_OR_ENTITY_OR_TAG, CLOSING_TAG, ENTITY, ENTITY_CHARS, OPENING_TAG, OPENNING_OR_CLOSING_TAG, TAG_NAME_CHARS, TAG_NAME_CLOSING, TAG_NAME_MUST_CLOSE, TAG_NAME_OPENING, TAG_OPENING_SELF_CLOSING, _Parser,
+  var ALPHA_CHARS, ALPHA_NUMERIC_CHARS, ATTR_DELIM, ATTR_ENTITY_DOUBLE_DELIM, ATTR_ENTITY_NO_DELIM, ATTR_ENTITY_SINGLE_DELIM, ATTR_NAME, ATTR_NAME_CHARS, ATTR_NAME_FIND_VALUE, ATTR_OR_TAG_END, ATTR_VALUE_DOUBLE_DELIM, ATTR_VALUE_NO_DELIM, ATTR_VALUE_SINGLE_DELIM, CHAR_OR_ENTITY_OR_TAG, CLOSING_TAG, ENTITY, ENTITY_CHARS, OPENING_TAG, OPENNING_OR_CLOSING_TAG, TAG_NAME_CHARS, TAG_NAME_CLOSING, TAG_NAME_MUST_CLOSE, TAG_NAME_OPENING, TAG_OPENING_SELF_CLOSING, _Parser,
     __slice = [].slice,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
@@ -789,6 +789,8 @@
 
   ALPHA_NUMERIC_CHARS = ALPHA_CHARS.concat('1234567890'.split(''));
 
+  ATTR_NAME_CHARS = ALPHA_NUMERIC_CHARS.concat([':']);
+
   ENTITY_CHARS = ALPHA_NUMERIC_CHARS.concat(['#']);
 
   TAG_NAME_CHARS = ALPHA_NUMERIC_CHARS.concat([':']);
@@ -895,7 +897,7 @@
       this.fsm.addTransition('>', TAG_NAME_MUST_CLOSE, CHAR_OR_ENTITY_OR_TAG, function() {
         return this._popTag();
       });
-      this.fsm.addTransitions(ALPHA_NUMERIC_CHARS, ATTR_NAME, null, function(c) {
+      this.fsm.addTransitions(ATTR_NAME_CHARS, ATTR_NAME, null, function(c) {
         return this.attributeName += c;
       });
       this.fsm.addTransitions([' ', '\n'], ATTR_NAME, ATTR_NAME_FIND_VALUE);
@@ -1003,7 +1005,7 @@
       }
       this.tagName = '';
       this.selfClosed = false;
-      return this.attributes = [];
+      return this.attributes = {};
     };
 
     _Parser.prototype._popTag = function() {
@@ -1308,7 +1310,6 @@
   })();
 
 }).call(this);
-
 (function() {
   var SELF_CLOSING_NODE_NAMES, _containedBy, _getChildNodeAndOffset, _getNodeRange, _getOffsetOfChildNode,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
@@ -1674,6 +1675,8 @@
         if (value === '') {
           attributeStrings.push(name);
         } else {
+          value = HTMLString.String.encode(value);
+          value = value.replace(/"/g, '&quot;');
           attributeStrings.push("" + name + "=\"" + value + "\"");
         }
       }
@@ -2741,7 +2744,7 @@
 
     ResizableElement.prototype._onMouseDown = function(ev) {
       var corner;
-      ResizableElement.__super__._onMouseDown.call(this);
+      ResizableElement.__super__._onMouseDown.call(this, ev);
       corner = this._getResizeCorner(ev.clientX, ev.clientY);
       if (corner) {
         return this.resize(corner, ev.clientX, ev.clientY);
@@ -3135,7 +3138,7 @@
     Static.prototype.focus = void 0;
 
     Static.prototype._onMouseDown = function(ev) {
-      Static.__super__._onMouseDown.call(this);
+      Static.__super__._onMouseDown.call(this, ev);
       if (this.attr('data-ce-moveable') !== void 0) {
         clearTimeout(this._dragTimeout);
         return this._dragTimeout = setTimeout((function(_this) {
@@ -3152,7 +3155,7 @@
     };
 
     Static.prototype._onMouseUp = function(ev) {
-      Static.__super__._onMouseUp.call(this);
+      Static.__super__._onMouseUp.call(this, ev);
       if (this._dragTimeout) {
         return clearTimeout(this._dragTimeout);
       }
@@ -3254,7 +3257,7 @@
         indent = '';
       }
       if (!this._lastCached || this._lastCached < this._modified) {
-        content = this.content.copy();
+        content = this.content.copy().trim();
         content.optimize();
         this._lastCached = Date.now();
         this._cached = content.html();
@@ -3284,6 +3287,9 @@
       }
       this._domElement.setAttribute('contenteditable', '');
       this._addCSSClass('ce-element--focused');
+      if (document.activeElement !== this.domElement()) {
+        this.domElement().focus();
+      }
       this._savedSelection.select(this._domElement);
       return this._savedSelection = void 0;
     };
@@ -3334,38 +3340,46 @@
     };
 
     Text.prototype._onKeyUp = function(ev) {
+      Text.__super__._onKeyUp.call(this, ev);
       return this._syncContent();
     };
 
     Text.prototype._onMouseDown = function(ev) {
-      Text.__super__._onMouseDown.call(this);
+      Text.__super__._onMouseDown.call(this, ev);
       clearTimeout(this._dragTimeout);
-      return this._dragTimeout = setTimeout((function(_this) {
+      this._dragTimeout = setTimeout((function(_this) {
         return function() {
           return _this.drag(ev.pageX, ev.pageY);
         };
       })(this), ContentEdit.DRAG_HOLD_DURATION);
+      if (this.content.length() === 0 && ContentEdit.Root.get().focused() === this) {
+        ev.preventDefault();
+        if (document.activeElement !== this._domElement) {
+          this._domElement.focus();
+        }
+        return new ContentSelect.Range(0, 0).select(this._domElement);
+      }
     };
 
     Text.prototype._onMouseMove = function(ev) {
       if (this._dragTimeout) {
         clearTimeout(this._dragTimeout);
       }
-      return Text.__super__._onMouseMove.call(this);
+      return Text.__super__._onMouseMove.call(this, ev);
     };
 
     Text.prototype._onMouseOut = function(ev) {
       if (this._dragTimeout) {
         clearTimeout(this._dragTimeout);
       }
-      return Text.__super__._onMouseOut.call(this);
+      return Text.__super__._onMouseOut.call(this, ev);
     };
 
     Text.prototype._onMouseUp = function(ev) {
       if (this._dragTimeout) {
         clearTimeout(this._dragTimeout);
       }
-      return Text.__super__._onMouseUp.call(this);
+      return Text.__super__._onMouseUp.call(this, ev);
     };
 
     Text.prototype._keyBack = function(ev) {
@@ -3503,11 +3517,11 @@
     };
 
     Text.prototype._syncContent = function(ev) {
-      var newSnaphot, snapshot;
+      var newSnapshot, snapshot;
       snapshot = this.content.html();
       this.content = new HTMLString.String(this._domElement.innerHTML, this.content.preserveWhitespace());
-      newSnaphot = this.content.html();
-      if (snapshot !== newSnaphot) {
+      newSnapshot = this.content.html();
+      if (snapshot !== newSnapshot) {
         this.taint();
       }
       return this._flagIfEmpty();
@@ -4221,7 +4235,7 @@
         indent = '';
       }
       if (!this._lastCached || this._lastCached < this._modified) {
-        content = this.content.copy();
+        content = this.content.copy().trim();
         content.optimize();
         this._lastCached = Date.now();
         this._cached = content.html();
@@ -4602,6 +4616,19 @@
       return 'table-row';
     };
 
+    TableRow.prototype.isEmpty = function() {
+      var cell, text, _i, _len, _ref;
+      _ref = this.children;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        cell = _ref[_i];
+        text = cell.tableCellText();
+        if (text && text.content.length() > 0) {
+          return false;
+        }
+      }
+      return true;
+    };
+
     TableRow.prototype.type = function() {
       return 'TableRow';
     };
@@ -4770,7 +4797,7 @@
         indent = '';
       }
       if (!this._lastCached || this._lastCached < this._modified) {
-        content = this.content.copy();
+        content = this.content.copy().trim();
         content.optimize();
         this._lastCached = Date.now();
         this._cached = content.html();
@@ -4799,12 +4826,42 @@
       return this._dragTimeout = setTimeout(initDrag, ContentEdit.DRAG_HOLD_DURATION);
     };
 
-    TableCellText.prototype._keyReturn = function(ev) {
+    TableCellText.prototype._keyBack = function(ev) {
+      var cell, previous, row, selection;
+      selection = ContentSelect.Range.query(this._domElement);
+      if (!(selection.get()[0] === 0 && selection.isCollapsed())) {
+        return;
+      }
       ev.preventDefault();
-      return this._keyTab({
-        'shiftKey': false,
-        'preventDefault': function() {}
-      });
+      cell = this.parent();
+      row = cell.parent();
+      if (this.content.length() === 0 && row.children.indexOf(cell) === 0) {
+        if (row.isEmpty()) {
+          previous = this.previousContent();
+          if (previous) {
+            previous.focus();
+            selection = new ContentSelect.Range(previous.content.length(), previous.content.length());
+            selection.select(previous.domElement());
+          }
+          return row.parent().detach(row);
+        }
+      }
+    };
+
+    TableCellText.prototype._keyDelete = function(ev) {
+      var lastChild, nextElement, row, selection;
+      row = this.parent().parent();
+      if (row.isEmpty()) {
+        ev.preventDefault();
+        lastChild = row.children[row.children.length - 1];
+        nextElement = lastChild.tableCellText().nextContent();
+        if (nextElement) {
+          nextElement.focus();
+          selection = new ContentSelect.Range(0, 0);
+          selection.select(nextElement.domElement());
+        }
+        return row.parent().detach(row);
+      }
     };
 
     TableCellText.prototype._keyDown = function(ev) {
@@ -4830,6 +4887,14 @@
         cellIndex = Math.min(cellIndex, nextRow.children.length);
         return nextRow.children[cellIndex].tableCellText().focus();
       }
+    };
+
+    TableCellText.prototype._keyReturn = function(ev) {
+      ev.preventDefault();
+      return this._keyTab({
+        'shiftKey': false,
+        'preventDefault': function() {}
+      });
     };
 
     TableCellText.prototype._keyTab = function(ev) {

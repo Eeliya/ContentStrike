@@ -3,8 +3,7 @@
   var _EditorApp,
     extend = function (child, parent) {
       for (var key in parent) {
-        if (hasProp.call(parent, key))
-          child[key] = parent[key];
+        if (hasProp.call(parent, key)) child[key] = parent[key];
       }
       function ctor() {
         this.constructor = child;
@@ -15,32 +14,10 @@
       return child;
     },
     hasProp = {}.hasOwnProperty,
-    slice = [
-    ].slice;
+    slice = [].slice;
 
   _EditorApp = (function (superClass) {
     extend(_EditorApp, superClass);
-
-// Listen for elements being mounted
-    /*ContentEdit.Root.get().bind('mount', function (element) {
-     var i, inputs;
-     
-     // We're only interested in elements that support content
-     if (element.content === undefined) {
-     return;
-     }
-     
-     // Search for inputs within the newely mounted element
-     inputs = element.domElement().querySelectorAll('input');
-     for (i = 0; i < inputs.length; i++) {
-     console.log(inputs[i])
-     // Prevent the propagation of the `keydown` event to the parent of the input 
-     inputs[i].addEventListener('keydown', function (ev) {
-     console.log(ev);
-     ev.stopPropagation();
-     });
-     }
-     });*/
 
     function _EditorApp() {
       _EditorApp.__super__.constructor.call(this);
@@ -53,10 +30,6 @@
       this._ignition = null;
       this._inspector = null;
       this._toolbox = null;
-      this._updatePositionInterval = null;
-      this._editorContainer = null;
-      this._contentContainer = null;
-      this.oldRect = {};
     }
 
     _EditorApp.prototype.ctrlDown = function () {
@@ -72,8 +45,7 @@
       return (function () {
         var j, len, ref, results;
         ref = this._orderedRegions;
-        results = [
-        ];
+        results = [];
         for (j = 0, len = ref.length; j < len; j++) {
           name = ref[j];
           results.push(this._regions[name]);
@@ -90,9 +62,24 @@
       return this._shiftDown;
     };
 
+    _EditorApp.prototype.getState = function () {
+      return this._state;
+    };
+
+    _EditorApp.prototype.isDormant = function () {
+      return this._state === ContentTools.EditorApp.DORMANT;
+    };
+
+    _EditorApp.prototype.isReady = function () {
+      return this._state === ContentTools.EditorApp.READY;
+    };
+
+    _EditorApp.prototype.isEditing = function () {
+      return this._state === ContentTools.EditorApp.EDITING;
+    };
+
     _EditorApp.prototype.busy = function (busy) {
-      //return this._ignition.busy(busy);
-      return false;
+      return this._ignition.busy(busy);
     };
 
     _EditorApp.prototype.init = function (queryOrDOMElements, namingProp) {
@@ -109,45 +96,39 @@
         return;
       }
       this.mount();
-      /*this._ignition = new ContentTools.IgnitionUI();
-       this.attach(this._ignition);
-       this._ignition.bind('start', (function (_this) {
-       return function () {
-       return _this.start();
-       };
-       })(this));
-       this._ignition.bind('stop', (function (_this) {
-       return function (save) {
-       var focused;
-       focused = ContentEdit.Root.get().focused();
-       if (focused && focused._syncContent !== void 0) {
-       focused._syncContent();
-       }
-       if (save) {
-       _this.save();
-       } else {
-       if (!_this.revert()) {
-       _this._ignition.changeState('editing');
-       return;
-       }
-       }
-       return _this.stop();
-       };
-       })(this));
-       if (this._domRegions.length) {
-       this._ignition.show();
-       }*/
+      this._ignition = new ContentTools.IgnitionUI();
+      this.attach(this._ignition);
+      this._ignition.bind('start', (function (_this) {
+        return function () {
+          return _this.start();
+        };
+      })(this));
+      this._ignition.bind('stop', (function (_this) {
+        return function (save) {
+          var focused;
+          focused = ContentEdit.Root.get().focused();
+          if (focused && focused._syncContent !== void 0) {
+            focused._syncContent();
+          }
+          if (save) {
+            _this.save();
+          } else {
+            if (!_this.revert()) {
+              _this._ignition.changeState('editing');
+              return;
+            }
+          }
+          return _this.stop();
+        };
+      })(this));
+      if (this._domRegions.length) {
+        this._ignition.show();
+      }
       this._toolbox = new ContentTools.ToolboxUI(ContentTools.DEFAULT_TOOLS);
       this.attach(this._toolbox);
       this._inspector = new ContentTools.InspectorUI();
       this.attach(this._inspector);
       this._state = ContentTools.EditorApp.READY;
-
-      ContentEdit.Root.get().unbind('detach');
-      ContentEdit.Root.get().unbind('paste');
-      ContentEdit.Root.get().unbind('next-region');
-      ContentEdit.Root.get().unbind('previous-region');
-
       ContentEdit.Root.get().bind('detach', (function (_this) {
         return function (element) {
           return _this._preventEmptyRegions();
@@ -221,8 +202,7 @@
     _EditorApp.prototype.highlightRegions = function (highlight) {
       var domRegion, j, len, ref, results;
       ref = this._domRegions;
-      results = [
-      ];
+      results = [];
       for (j = 0, len = ref.length; j < len; j++) {
         domRegion = ref[j];
         if (highlight) {
@@ -235,71 +215,13 @@
     };
 
     _EditorApp.prototype.mount = function () {
-      var _this = this;
-      this._domElement = this.constructor.createDiv([
-        'ct-app'
-      ]);
-      this._domElement.style.display = "none";
-      this._domElement.style.position = "absolute";
-
-      if (this._domRegions.length === 1) {
-        this._editorContainer = this._domRegions[0];
-        var html = this._editorContainer.innerHTML;
-
-        ContentEdit.addCSSClass(this._editorContainer, 'ct-editor-container');
-
-        this._editorContainer.innerHTML = '';
-        this._editorContainer.appendChild(this._domElement);
-
-        this._contentContainer = this.constructor.createDiv([
-          'ct-content-container'
-        ]);
-        this._contentContainer.innerHTML = html;
-
-        this._editorContainer.appendChild(this._contentContainer);
-
-        this._domRegions = [
-          this._contentContainer
-        ];
-        this.oldRect = {};
-        this._updatePositionInterval = setInterval(function () {
-          _this.updateToolboxPosition();
-        }, 300);
-
-      } else {
-        document.body.insertBefore(this._domElement, null);
-      }
+      this._domElement = this.constructor.createDiv(['ct-app']);
+      document.body.insertBefore(this._domElement, null);
       return this._addDOMEventListeners();
     };
 
-    _EditorApp.prototype.updateToolboxPosition = function () {
-      if (!this._domRegions) {
-        return;
-      }
-
-      var rect = this._editorContainer.getBoundingClientRect();
-      //console.log(this._domElement, this._contentContainer);
-      if (rect.width <= 0 || rect.height <= 0) {
-        this._domElement.style.display = "none";
-        return;
-      }
-
-      this._domElement.style.display = "";
-      var toolBarRect = this._domElement.getBoundingClientRect();
-
-      if ((this.oldRect.top === toolBarRect.top && this.oldRect.height === toolBarRect.height) || toolBarRect.height <= 0) {
-        return;
-      }
-
-      this._contentContainer.style.marginTop = toolBarRect.height + 'px';
-      this._domElement.style.width = rect.width + 'px';
-      /*this._domElement.style.top = rect.top + 'px';*/
-      this.oldRect = toolBarRect;
-      ContentEdit.Root.get().trigger('update-position', this);
-    };
-
     _EditorApp.prototype.paste = function (element, clipboardData) {
-      var className, content, cursor, encodeHTML, i, insertAt, insertIn, insertNode, item, itemText, j, lastItem, len, line, lineLength, lines, selection, tail, tip;
+      var character, content, cursor, encodeHTML, i, insertAt, insertIn, insertNode, item, itemText, j, lastItem, len, line, lineLength, lines, replaced, selection, tags, tail, tip, type;
       content = clipboardData.getData('text/plain');
       lines = content.split('\n');
       lines = lines.filter(function (line) {
@@ -309,17 +231,17 @@
         return;
       }
       encodeHTML = HTMLString.String.encode;
-      className = element.constructor.name;
-      if ((lines.length > 1 || !element.content) && className !== 'PreText') {
-        if (className === 'ListItemText') {
+      type = element.type();
+      if ((lines.length > 1 || !element.content) && type !== 'PreText') {
+        if (type === 'ListItemText') {
           insertNode = element.parent();
           insertIn = element.parent().parent();
           insertAt = insertIn.children.indexOf(insertNode) + 1;
         } else {
           insertNode = element;
-          if (insertNode.parent().constructor.name !== 'Region') {
+          if (insertNode.parent().type() !== 'Region') {
             insertNode = element.closest(function (node) {
-              return node.parent().constructor.name === 'Region';
+              return node.parent().type() === 'Region';
             });
           }
           insertIn = insertNode.parent();
@@ -328,7 +250,7 @@
         for (i = j = 0, len = lines.length; j < len; i = ++j) {
           line = lines[i];
           line = encodeHTML(line);
-          if (className === 'ListItemText') {
+          if (type === 'ListItemText') {
             item = new ContentEdit.ListItem();
             itemText = new ContentEdit.ListItemText(line);
             item.attach(itemText);
@@ -344,11 +266,23 @@
         return lastItem.selection(new ContentSelect.Range(lineLength, lineLength));
       } else {
         content = encodeHTML(content);
-        content = new HTMLString.String(content, className === 'PreText');
+        content = new HTMLString.String(content, type === 'PreText');
         selection = element.selection();
         cursor = selection.get()[0] + content.length();
         tip = element.content.substring(0, selection.get()[0]);
         tail = element.content.substring(selection.get()[1]);
+        replaced = element.content.substring(selection.get()[0], selection.get()[1]);
+        if (replaced.length()) {
+          character = replaced.characters[0];
+          tags = character.tags();
+          if (character.isTag()) {
+            tags.shift();
+          }
+          if (tags.length >= 1) {
+            content = content.format.apply(content, [0,
+              content.length()].concat(slice.call(tags)));
+          }
+        }
         element.content = tip.concat(content);
         element.content = element.content.concat(tail, false);
         element.updateInnerHTML();
@@ -362,7 +296,6 @@
       if (!this.isMounted()) {
         return;
       }
-      clearInterval(this._updatePositionInterval);
       this._domElement.parentNode.removeChild(this._domElement);
       this._domElement = null;
       this._removeDOMEventListeners();
@@ -392,6 +325,9 @@
         region.domElement().innerHTML = snapshot.regions[name];
       }
       if (restoreEditable) {
+        if (ContentEdit.Root.get().focused()) {
+          ContentEdit.Root.get().focused().blur();
+        }
         this._regions = {};
         ref1 = this._domRegions;
         for (i = j = 0, len = ref1.length; j < len; i = ++j) {
@@ -403,14 +339,14 @@
           this._regions[name] = new ContentEdit.Region(domRegion);
         }
         this.history.replaceRegions(this._regions);
-        return this.history.restoreSelection(snapshot);
+        this.history.restoreSelection(snapshot);
+        return this._inspector.updateTags();
       }
     };
 
     _EditorApp.prototype.save = function () {
       var args, child, html, modifiedRegions, name, passive, ref, region, root;
-      passive = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [
-      ];
+      passive = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
       root = ContentEdit.Root.get();
       if (root.lastModified() === this._rootLastModified && passive) {
         return;
@@ -433,11 +369,10 @@
           continue;
         }
         modifiedRegions[name] = html;
+        this._regionsLastModified[name] = region.lastModified();
       }
-      return this.trigger.apply(this, [
-        'save',
-        modifiedRegions
-      ].concat(slice.call(args)));
+      return this.trigger.apply(this, ['save',
+        modifiedRegions].concat(slice.call(args)));
     };
 
     _EditorApp.prototype.setRegionOrder = function (regionNames) {
@@ -448,8 +383,7 @@
       var domRegion, i, j, len, name, ref;
       this.busy(true);
       this._regions = {};
-      this._orderedRegions = [
-      ];
+      this._orderedRegions = [];
       ref = this._domRegions;
       for (i = j = 0, len = ref.length; j < len; i = ++j) {
         domRegion = ref[i];
@@ -468,10 +402,6 @@
       this._state = ContentTools.EditorApp.EDITING;
       this._toolbox.show();
       this._inspector.show();
-      //var toolBoxRect = this._toolbox._domElement.getBoundingClientRect();
-      //var inspectorRect = this._inspector._domElement.getBoundingClientRect();
-      //this.contentContainer.style.marginTop = toolBoxRect.height + 'px';
-      //this._domRegions[0].style.marginTop = toolBoxRect.height + inspectorRect.height + 'px';
       return this.busy(false);
     };
 
@@ -479,14 +409,11 @@
       if (ContentEdit.Root.get().focused()) {
         ContentEdit.Root.get().focused().blur();
       }
-      clearInterval(this._updatePositionInterval);
       this.history.stopWatching();
       this.history = null;
       this._toolbox.hide();
       this._inspector.hide();
       this._regions = {};
-      this._domRegions[0].style.marginTop = '';
-
       return this._state = ContentTools.EditorApp.READY;
     };
 
@@ -530,7 +457,7 @@
       document.addEventListener('keyup', this._handleHighlightOff);
       window.onbeforeunload = (function (_this) {
         return function (ev) {
-          if (ContentEdit.Root.get().lastModified() > _this._rootLastModified && _this._state === ContentTools.EditorApp.EDITING) {
+          if (_this._state === ContentTools.EditorApp.EDITING) {
             return ContentEdit._('Your changes have not been saved, do you really want to lose them?');
           }
         };
@@ -545,8 +472,7 @@
     _EditorApp.prototype._preventEmptyRegions = function () {
       var name, placeholder, ref, region, results;
       ref = this._regions;
-      results = [
-      ];
+      results = [];
       for (name in ref) {
         region = ref[name];
         if (region.children.length > 0) {
@@ -560,7 +486,6 @@
     };
 
     _EditorApp.prototype._removeDOMEventListeners = function () {
-      window.onbeforeunload = null;
       document.removeEventListener('keydown', this._handleHighlightOn);
       return document.removeEventListener('keyup', this._handleHighlightOff);
     };
@@ -572,8 +497,7 @@
   ContentTools.EditorApp = (function () {
     var instance;
 
-    function EditorApp() {
-    }
+    function EditorApp() {}
 
     EditorApp.DORMANT = 'dormant';
 
@@ -589,14 +513,6 @@
       return instance != null ? instance : instance = new cls();
     };
 
-    EditorApp.getNew = function () {
-      var cls;
-      cls = ContentTools.EditorApp.getCls();
-      ContentEdit.Root.reset();
-      instance = new cls();
-      return instance;
-    };
-
     EditorApp.getCls = function () {
       return _EditorApp;
     };
@@ -605,4 +521,6 @@
 
   })();
 
+// ---
+// generated by coffee-script 1.9.2
 }).call(this);

@@ -36,6 +36,7 @@
       this._editorContainer = null;
       this._contentContainer = null;
       this.oldRect = {};
+      this._root = null;
     }
 
     _EditorApp.prototype.ctrlDown = function () {
@@ -230,7 +231,6 @@
       }
 
       var rect = this._editorContainer.getBoundingClientRect();
-      //console.log(this._domElement, this._contentContainer);
       if (rect.width <= 0 || rect.height <= 0) {
         this._domElement.style.display = "none";
         return;
@@ -248,6 +248,7 @@
       /*this._domElement.style.top = rect.top + 'px';*/
       this.oldRect = toolBarRect;
       ContentEdit.Root.get().trigger('update-position', this);
+      console.log('update-position', this);
     };
 
     _EditorApp.prototype.paste = function (element, clipboardData) {
@@ -396,6 +397,30 @@
       return this._orderedRegions = regionNames.slice();
     };
 
+    _EditorApp.prototype.addStandByParagraph = function () {
+      var firstRegion = this.orderedRegions()[0];
+      var lastChild = firstRegion.children[firstRegion.children.length - 1];
+      if (lastChild && lastChild._tagName === 'p' && !lastChild.content.html()) {
+        lastChild.focus();
+      } else {
+        var p = new ContentEdit.Text('p', {});
+        firstRegion.attach(p);
+        p.focus();
+      }
+    };
+
+    _EditorApp.prototype.focusLastElement = function (e) {
+      if (e.target !== this._contentContainer)
+        return;
+
+      var lastChild = this.regions()[0].children[this.regions()[0].children.length - 1];
+      if (lastChild) {
+        var range = new ContentSelect.Range(lastChild._domElement.innerHTML.length, lastChild._domElement.innerHTML.length);
+        lastChild.selection(range);
+        lastChild.focus();
+      }
+    };
+
     _EditorApp.prototype.start = function () {
       var domRegion, i, j, len, name, ref;
       this.busy(true);
@@ -413,13 +438,15 @@
         this._orderedRegions.push(name);
         this._regionsLastModified[name] = this._regions[name].lastModified();
       }
-      this._preventEmptyRegions();
+      //this._preventEmptyRegions();
+      this.addStandByParagraph();
       this._rootLastModified = ContentEdit.Root.get().lastModified();
       this.history = new ContentTools.History(this._regions);
       this.history.watch();
       this._state = ContentTools.EditorApp.EDITING;
       this._toolbox.show();
       this._inspector.show();
+
       return this.busy(false);
     };
 
@@ -439,6 +466,7 @@
     };
 
     _EditorApp.prototype._addDOMEventListeners = function () {
+      var _this = this;
       this._handleHighlightOn = (function (_this) {
         return function (ev) {
           var ref;
@@ -474,6 +502,11 @@
           }
         };
       })(this);
+
+      this._editorContainer.addEventListener('click', function (e) {
+        _this.focusLastElement(e);
+      });
+
       document.addEventListener('keydown', this._handleHighlightOn);
       document.addEventListener('keyup', this._handleHighlightOff);
       window.onbeforeunload = (function (_this) {
