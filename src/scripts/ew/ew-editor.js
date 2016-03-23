@@ -399,7 +399,7 @@
       var firstRegion = this.orderedRegions()[0];
       var lastChild = firstRegion.children[firstRegion.children.length - 1];
 
-      if (lastChild && lastChild._tagName === 'p') {
+      if (lastChild && lastChild.type() === 'Text') {
         lastChild.focus();
       } else {
         var p = new ContentEdit.Text('p', {});
@@ -413,6 +413,7 @@
         return;
 
       var lastChild = this.regions()[0].children[this.regions()[0].children.length - 1];
+      
       if (lastChild) {
         if (lastChild.selection) {
           var range = new ContentSelect.Range(lastChild._domElement.innerHTML.length, lastChild._domElement.innerHTML.length);
