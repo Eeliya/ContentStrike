@@ -91,7 +91,7 @@
       this.mount();
       this._toolbox = new ContentTools.ToolboxUI(ContentTools.DEFAULT_TOOLS);
       this.attach(this._toolbox);
-      this._inspector = new ContentTools.InspectorUI();
+      this._inspector = new ContentTools.InspectorUI(this, ContentEdit.Root.get());
       this.attach(this._inspector);
       this._state = ContentTools.EditorApp.READY;
 
@@ -413,7 +413,7 @@
         return;
 
       var lastChild = this.regions()[0].children[this.regions()[0].children.length - 1];
-      
+
       if (lastChild) {
         if (lastChild.selection) {
           var range = new ContentSelect.Range(lastChild._domElement.innerHTML.length, lastChild._domElement.innerHTML.length);
@@ -441,13 +441,13 @@
         this._regionsLastModified[name] = this._regions[name].lastModified();
       }
       //this._preventEmptyRegions();
+      this._toolbox.show();
+      this._inspector.show();
       this.addStandByParagraph();
       this._rootLastModified = ContentEdit.Root.get().lastModified();
       this.history = new ContentTools.History(this._regions);
       this.history.watch();
       this._state = ContentTools.EditorApp.EDITING;
-      this._toolbox.show();
-      this._inspector.show();
 
       return this.busy(false);
     };
