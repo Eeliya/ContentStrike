@@ -20,7 +20,7 @@
       ],
       [
         'heading',
-        'heading2',        
+        'heading2',
         'paragraph',
         'link-block',
         'unordered-list',
@@ -35,6 +35,7 @@
         'ew-media',
         'image',
         'video',
+        'soundcloud-embed',
         'preformatted',
         'content-field'
       ],

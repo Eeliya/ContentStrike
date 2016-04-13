@@ -44,13 +44,14 @@ and open the template in the editor.
   font-size: 10px;
   line-height: 10px;
   padding: 4px 4px 3px;
-  position: absolute
+  position: absolute;
+  word-break: break-all;
 }
 .ce-element--type-image:before,
 .ce-element--type-video:before {
   content: attr(data-ce-size);
   right: 10px;
-  top: 10px
+  top: 10px;
 }
 .ce-element--type-image.ce-element--over:before,
 .ce-element--type-image.ce-element--resizing:before,
@@ -69,7 +70,8 @@ and open the template in the editor.
   bottom: 10px;
   content: attr(data-ce-title);
   display: block;
-  left: 10px
+  left: 10px;
+  right: 10px;
 }
 .ce-element--empty:after {
   display: inline-block;
@@ -516,6 +518,7 @@ video.align-right,
   height: 380px;
   margin-top: 0px;
 }
+
 .ct-widget .ct-dialog__controls {
   margin: 10px 10px 0;
 }
@@ -1785,6 +1788,13 @@ video.align-right,
 .ct-widget .ct-tool--video:before {
   content: "\ea98"
 }
+.ct-widget .ct-tool--soundcloud:before {
+  content: "";
+  background-image: url('https://w.soundcloud.com/icon/assets/images/orange_transparent_32-94fc761.png');
+  width: 32px;
+  height: 32px;
+  float: left;
+}
 .ct-widget .ct-tool--undo:before {
   content: "\e965"
 }
@@ -2069,4 +2079,28 @@ a.ce-element--type-text {
 
 .text-right {
   text-align: right;
+}
+
+.ct-soundcloud-dialog .ct-dialog__view {
+  height: 300px;
+  max-height: 300px;
+  overflow: hidden;
+  margin-top: 0px;
+}
+
+.ct-soundcloud-dialog .ct-soundcloud-dialog__input {
+  border: none;
+  border-bottom: 2px solid #ddd;
+  height: 112px;
+  outline: 0;
+  padding: 0 5px;
+  font-family: arial,sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+  vertical-align: top;
+  width: 564px;
+}
+
+.ct-soundcloud-dialog .ct-control--insert {
+  margin-top: 40px;
 }

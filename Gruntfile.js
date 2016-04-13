@@ -108,7 +108,8 @@
             'src/scripts/history.js',
             'src/scripts/styles.js',
             'src/scripts/tools.js',
-            'src/scripts/ew/ew-tools.js'
+            'src/scripts/ew/ew-tools.js',
+            'src/scripts/ew/ew-tools-soundcloud.js'
           ],
           dest: 'build/content-tools.js'
 
