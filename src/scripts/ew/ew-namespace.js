@@ -35,7 +35,7 @@
         'ew-media',
         'image',
         'video',
-        'soundcloud-embed',
+        'widget-embed',
         'preformatted',
         'content-field'
       ],

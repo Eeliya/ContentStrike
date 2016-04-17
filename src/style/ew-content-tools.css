@@ -1788,9 +1788,12 @@ video.align-right,
 .ct-widget .ct-tool--video:before {
   content: "\ea98"
 }
-.ct-widget .ct-tool--soundcloud:before {
+.ct-widget .ct-tool--iframe:before {
   content: "";
-  background-image: url('https://w.soundcloud.com/icon/assets/images/orange_transparent_32-94fc761.png');
+  background-image: url("images/settings.png") !important;
+  background-repeat: no-repeat;
+  background-size: 18px 18px;
+  background-position: center center;  
   width: 32px;
   height: 32px;
   float: left;
@@ -2081,14 +2084,14 @@ a.ce-element--type-text {
   text-align: right;
 }
 
-.ct-soundcloud-dialog .ct-dialog__view {
+.ct-iframe-dialog .ct-dialog__view {
   height: 300px;
   max-height: 300px;
   overflow: hidden;
   margin-top: 0px;
 }
 
-.ct-soundcloud-dialog .ct-soundcloud-dialog__input {
+.ct-iframe-dialog .ct-iframe-dialog__input {
   border: none;
   border-bottom: 2px solid #ddd;
   height: 112px;
@@ -2101,6 +2104,6 @@ a.ce-element--type-text {
   width: 564px;
 }
 
-.ct-soundcloud-dialog .ct-control--insert {
+.ct-iframe-dialog .ct-control--insert {
   margin-top: 40px;
 }
