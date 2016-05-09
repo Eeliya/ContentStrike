@@ -135,9 +135,10 @@
     };
 
     LinkBlock.apply = function (element, selection, callback) {
-      var content, insertAt, parent, textElement;
-      element.storeState();
+      var content, insertAt, parent, textElement;      
+      
       if (element.type() === 'PreText') {
+        element.storeState();
         content = element.content.html().replace(/&nbsp;/g, ' ');
         textElement = new HTMLString.Tag(this.tagName, {
           href: ""
@@ -147,11 +148,12 @@
         parent.detach(element);
         parent.attach(textElement, insertAt);
         element.blur();
+        element.restoreState();
         textElement.focus();
         textElement.selection(selection);
       } else {
         element.tagName(this.tagName);
-        element.restoreState();
+        //element.restoreState();
         ContentTools.Tools.Link.apply(element, selection, callback);
       }
       return callback(true);
@@ -411,7 +413,7 @@
     };
 
     ContentField.canApply = function (element, selection) {
-      return element.parent().constructor.name === 'Region';
+      return element.parent().constructor.name === 'Region' || element._parent.constructor.name === 'ListItem';
     };
 
     //var oldContentField = null;
@@ -419,7 +421,11 @@
       if (element.attr("content-field")) {
 
       } else {
-        toContentField(element, "").focus();
+        if (element._parent.constructor.name === 'ListItem') {
+          toContentField(element._parent._parent, "").focus();
+        } else {
+          toContentField(element, "").focus();
+        }
       }
     };
 
@@ -458,12 +464,17 @@
         class: "center"
       });
       //imageChooserDialog.append("<div class='form-content grid tabs-bar no-footer'></div>");
-      $.post("~admin/html/content-management/link-chooser-media.php", {
-        callback: ""
-      }, function (data) {
+      //$.post("~admin/html/content-management/link-chooser-media.php", {
+      System.loadModule({
+        id: "forms/media-chooser",
+        url: "~admin/html/content-management/link-chooser-media.php",
+        params: {
+          callback: ""
+        }
+      }, function (module) {
         //imageChooserDialog.find(".form-content:first").append(data);
         //imageChooserDialog.prepend("<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1></div>");
-        imageChooserDialog.html(data);
+        imageChooserDialog.html(module.html);
         var ref = _this._insertAt(element), node = ref[0], index = ref[1];
         imageChooserDialog[0].selectMedia = function (item) {
           var element = System.entity('services/media_chooser').selectItem(item);
@@ -485,7 +496,7 @@
               var image = new ContentEdit.Image({
                 src: element.src,
                 width: element.width,
-                hight: element.height
+                height: element.height
               });
               if (node.parent()) {
                 node.parent().attach(image, index);
@@ -594,6 +605,7 @@
         measureSpan = domElement.getElementsByClassName('ct--puesdo-select');
         rect = measureSpan[0].getBoundingClientRect();
       }
+      
       app = ContentTools.EditorApp.get();
       modal = new ContentTools.ModalUI(transparent = true, allowScrolling = true);
       modal.bind('click', function () {

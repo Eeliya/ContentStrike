@@ -98,7 +98,7 @@
           }
         };
       })(this);
-      return this._watchInterval = setInterval(watch, 50);
+      return this._watchInterval = setInterval(watch, 100);
     };
 
     History.prototype._store = function() {

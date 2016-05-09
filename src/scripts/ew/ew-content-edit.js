@@ -3,19 +3,19 @@
  */
 (function () {
   var __hasProp = {}.hasOwnProperty,
-    __extends = function (child, parent) {
-      for (var key in parent) {
-        if (__hasProp.call(parent, key))
-          child[key] = parent[key];
-      }
-      function ctor() {
-        this.constructor = child;
-      }
-      ctor.prototype = parent.prototype;
-      child.prototype = new ctor();
-      child.__super__ = parent.prototype;
-      return child;
-    };
+          __extends = function (child, parent) {
+            for (var key in parent) {
+              if (__hasProp.call(parent, key))
+                child[key] = parent[key];
+            }
+            function ctor() {
+              this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor();
+            child.__super__ = parent.prototype;
+            return child;
+          };
 
   ContentEdit.TagNames.get().register(ContentEdit.Text, 'address', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'a');
 
@@ -152,8 +152,21 @@
       }
       img = "" + indent + "<img" + (this._attributesToString()) + ">";
       if (this.a) {
+        this.a['data-ce-tag'] = 'img';
+        if (this._attributes['content-field']) {
+          this.a['content-field'] = this._attributes['content-field'];
+        }
+
+        var newAttributes = {};
+        for (var attr in this._attributes) {
+          if (this._attributes.hasOwnProperty(attr) && attr !== 'content-field') {
+            newAttributes[attr] = this._attributes[attr];
+          }
+        }
+
+        img = "" + indent + "<img " + ContentEdit.attributesToString(newAttributes) + ">";
         attributes = ContentEdit.attributesToString(this.a);
-        attributes = "" + attributes + " data-ce-tag=\"img\"";
+        attributes = "" + attributes;
         return ("" + indent + "<a " + attributes + ">\n") + ("" + ContentEdit.INDENT + img + "\n") + ("" + indent + "</a>");
       } else {
         return img;
@@ -248,6 +261,12 @@
           attributes['height'] = domElement.clientHeight;
         }
       }
+
+      if (a && a['content-field']) {
+        attributes['content-field'] = a['content-field'];
+        delete a['content-field'];
+      }
+      
       return new this(attributes, a);
     };
 

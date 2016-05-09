@@ -5003,19 +5003,19 @@
  */
 (function () {
   var __hasProp = {}.hasOwnProperty,
-    __extends = function (child, parent) {
-      for (var key in parent) {
-        if (__hasProp.call(parent, key))
-          child[key] = parent[key];
-      }
-      function ctor() {
-        this.constructor = child;
-      }
-      ctor.prototype = parent.prototype;
-      child.prototype = new ctor();
-      child.__super__ = parent.prototype;
-      return child;
-    };
+          __extends = function (child, parent) {
+            for (var key in parent) {
+              if (__hasProp.call(parent, key))
+                child[key] = parent[key];
+            }
+            function ctor() {
+              this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor();
+            child.__super__ = parent.prototype;
+            return child;
+          };
 
   ContentEdit.TagNames.get().register(ContentEdit.Text, 'address', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'a');
 
@@ -5152,8 +5152,21 @@
       }
       img = "" + indent + "<img" + (this._attributesToString()) + ">";
       if (this.a) {
+        this.a['data-ce-tag'] = 'img';
+        if (this._attributes['content-field']) {
+          this.a['content-field'] = this._attributes['content-field'];
+        }
+
+        var newAttributes = {};
+        for (var attr in this._attributes) {
+          if (this._attributes.hasOwnProperty(attr) && attr !== 'content-field') {
+            newAttributes[attr] = this._attributes[attr];
+          }
+        }
+
+        img = "" + indent + "<img " + ContentEdit.attributesToString(newAttributes) + ">";
         attributes = ContentEdit.attributesToString(this.a);
-        attributes = "" + attributes + " data-ce-tag=\"img\"";
+        attributes = "" + attributes;
         return ("" + indent + "<a " + attributes + ">\n") + ("" + ContentEdit.INDENT + img + "\n") + ("" + indent + "</a>");
       } else {
         return img;
@@ -5248,6 +5261,12 @@
           attributes['height'] = domElement.clientHeight;
         }
       }
+
+      if (a && a['content-field']) {
+        attributes['content-field'] = a['content-field'];
+        delete a['content-field'];
+      }
+      
       return new this(attributes, a);
     };
 
@@ -8788,6 +8807,7 @@
     };
 
     _EditorApp.prototype.destroy = function () {
+      this.stop();
       return this.unmount();
     };
 
@@ -9040,7 +9060,12 @@
           var range = new ContentSelect.Range(lastChild._domElement.innerHTML.length, lastChild._domElement.innerHTML.length);
           lastChild.selection(range);
         }
-        lastChild.focus();
+
+        if (lastChild.focus) {
+          lastChild.focus();
+        } else {
+          lastChild._domElement.focus();
+        }
       }
     };
 
@@ -9310,7 +9335,7 @@
           }
         };
       })(this);
-      return this._watchInterval = setInterval(watch, 50);
+      return this._watchInterval = setInterval(watch, 100);
     };
 
     History.prototype._store = function() {
@@ -10673,9 +10698,10 @@
     };
 
     LinkBlock.apply = function (element, selection, callback) {
-      var content, insertAt, parent, textElement;
-      element.storeState();
+      var content, insertAt, parent, textElement;      
+      
       if (element.type() === 'PreText') {
+        element.storeState();
         content = element.content.html().replace(/&nbsp;/g, ' ');
         textElement = new HTMLString.Tag(this.tagName, {
           href: ""
@@ -10685,11 +10711,12 @@
         parent.detach(element);
         parent.attach(textElement, insertAt);
         element.blur();
+        element.restoreState();
         textElement.focus();
         textElement.selection(selection);
       } else {
         element.tagName(this.tagName);
-        element.restoreState();
+        //element.restoreState();
         ContentTools.Tools.Link.apply(element, selection, callback);
       }
       return callback(true);
@@ -10949,7 +10976,7 @@
     };
 
     ContentField.canApply = function (element, selection) {
-      return element.parent().constructor.name === 'Region';
+      return element.parent().constructor.name === 'Region' || element._parent.constructor.name === 'ListItem';
     };
 
     //var oldContentField = null;
@@ -10957,7 +10984,11 @@
       if (element.attr("content-field")) {
 
       } else {
-        toContentField(element, "").focus();
+        if (element._parent.constructor.name === 'ListItem') {
+          toContentField(element._parent._parent, "").focus();
+        } else {
+          toContentField(element, "").focus();
+        }
       }
     };
 
@@ -10996,12 +11027,17 @@
         class: "center"
       });
       //imageChooserDialog.append("<div class='form-content grid tabs-bar no-footer'></div>");
-      $.post("~admin/html/content-management/link-chooser-media.php", {
-        callback: ""
-      }, function (data) {
+      //$.post("~admin/html/content-management/link-chooser-media.php", {
+      System.loadModule({
+        id: "forms/media-chooser",
+        url: "~admin/html/content-management/link-chooser-media.php",
+        params: {
+          callback: ""
+        }
+      }, function (module) {
         //imageChooserDialog.find(".form-content:first").append(data);
         //imageChooserDialog.prepend("<div class='header-pane tabs-bar row'><h1 class='form-title'>Media</h1></div>");
-        imageChooserDialog.html(data);
+        imageChooserDialog.html(module.html);
         var ref = _this._insertAt(element), node = ref[0], index = ref[1];
         imageChooserDialog[0].selectMedia = function (item) {
           var element = System.entity('services/media_chooser').selectItem(item);
@@ -11023,7 +11059,7 @@
               var image = new ContentEdit.Image({
                 src: element.src,
                 width: element.width,
-                hight: element.height
+                height: element.height
               });
               if (node.parent()) {
                 node.parent().attach(image, index);
@@ -11132,6 +11168,7 @@
         measureSpan = domElement.getElementsByClassName('ct--puesdo-select');
         rect = measureSpan[0].getBoundingClientRect();
       }
+      
       app = ContentTools.EditorApp.get();
       modal = new ContentTools.ModalUI(transparent = true, allowScrolling = true);
       modal.bind('click', function () {

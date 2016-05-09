@@ -167,6 +167,7 @@
     };
 
     _EditorApp.prototype.destroy = function () {
+      this.stop();
       return this.unmount();
     };
 
@@ -419,7 +420,12 @@
           var range = new ContentSelect.Range(lastChild._domElement.innerHTML.length, lastChild._domElement.innerHTML.length);
           lastChild.selection(range);
         }
-        lastChild.focus();
+
+        if (lastChild.focus) {
+          lastChild.focus();
+        } else {
+          lastChild._domElement.focus();
+        }
       }
     };
 
