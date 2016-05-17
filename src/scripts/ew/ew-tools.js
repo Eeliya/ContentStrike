@@ -135,8 +135,8 @@
     };
 
     LinkBlock.apply = function (element, selection, callback) {
-      var content, insertAt, parent, textElement;      
-      
+      var content, insertAt, parent, textElement;
+
       if (element.type() === 'PreText') {
         element.storeState();
         content = element.content.html().replace(/&nbsp;/g, ' ');
@@ -605,7 +605,7 @@
         measureSpan = domElement.getElementsByClassName('ct--puesdo-select');
         rect = measureSpan[0].getBoundingClientRect();
       }
-      
+
       app = ContentTools.EditorApp.get();
       modal = new ContentTools.ModalUI(transparent = true, allowScrolling = true);
       modal.bind('click', function () {
@@ -687,6 +687,9 @@
       var dialogRect = dialog._domElement.getBoundingClientRect();
       var x = (rect.left + (rect.width / 2)) - containerRect.left - (dialogRect.width / 2),
               y = rect.top - containerRect.top;
+      if (x + dialogRect.width > containerRect.width) {
+        x = containerRect.width - dialogRect.width;
+      }
       dialog.position([
         x > 0 ? x : 0,
         y > 0 ? y : 0

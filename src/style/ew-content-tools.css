@@ -135,12 +135,12 @@ and open the template in the editor.
 }
 .ce-drag-helper {
   background: #fff;
-  border-radius: 2px;
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.25);
+  border-radius: 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
   color: #4e4e4e;
   font: arial, sans-serif;
   font-size: 12px;
-  height: 120px;
+  max-height: 120px;
   left: 0;
   line-height: 135%;
   margin: 5px 0px 0px 5px;
@@ -148,9 +148,10 @@ and open the template in the editor.
   padding: 15px;
   position: absolute;
   top: 0;
-  width: 120px;
+  max-width: 220px;
   word-wrap: break-word;
-  z-index: 9
+  z-index: 9;
+  opacity: .9;
 }
 .ce-drag-helper:before {
   background: #2980b9;
@@ -160,7 +161,7 @@ and open the template in the editor.
   font-family: arial, sans-serif;
   font-size: 10px;
   line-height: 10px;
-  padding: 4px 4px 3px;
+  padding: 2px 5px;
   position: absolute;
   right: 0;
   top: 0
@@ -171,14 +172,14 @@ and open the template in the editor.
 .ce-drag-helper--type-table:after,
 .ce-drag-helper--type-table-row:after,
 .ce-drag-helper--type-text:after {
-  background-image: linear-gradient(rgba(255, 255, 255, 0), #fff 66%);
-  bottom: 0;
-  content: '';
-  display: block;
-  height: 40px;
-  left: 0;
-  position: absolute;
-  width: 100%
+  /*  background-image: linear-gradient(rgba(255, 255, 255, 0), #fff 66%);
+    bottom: 0;
+    content: '';
+    display: block;
+    height: 40px;
+    left: 0;
+    position: absolute;
+    width: 100%*/
 }
 .ce-drag-helper--type-image {
   background-repeat: no-repeat;
@@ -881,13 +882,15 @@ video.align-right,
 }
 .ct-widget.ct-anchored-dialog {
   background-color: #fff;
-  box-shadow: 0 2px 3px rgba(0,0,0,.2), 0 1px 8px rgba(0,0,0,.35);
+  box-shadow: 0 2px 3px rgba(0,0,0,.2), 0 3px 9px rgba(0,0,0,.25);
   font-size: 0;
   height: 46px;
   left: 0;
   border-radius: 2px;
   padding: 3px;
   margin-top: -62px;
+  margin-left: 5px;
+  margin-right: 5px;
   position: absolute;
   top: 0;
   z-index: 10099
@@ -896,7 +899,7 @@ video.align-right,
   border: 16px solid rgba(255, 255, 255, 0);
   border-top-color: #27ae60;
   content: '';
-  left: 210px;
+  left: 294px;
   margin-left: -16px;
   position: absolute;
   top: 46px
@@ -911,14 +914,14 @@ video.align-right,
   line-height: 40px;
   padding: 0 16px;
   vertical-align: top;
-  width: 374px
+  width: 500px
 }
 .ct-widget .ct-anchored-dialog__button {
   background: #27ae60;
   cursor: pointer;
   float: right;
-  height: 40px;
-  line-height: 40px;
+  height: 36px;
+  line-height: 36px;
   border-radius: 2px;
   text-align: center;
   font-family: 'icon';
@@ -928,7 +931,8 @@ video.align-right,
   font-variant: normal;
   speak: none;
   text-transform: none;
-  width: 40px
+  width: 36px;
+  margin: 2px;
 }
 .ct-widget .ct-anchored-dialog__button:before {
   color: white;
@@ -2049,27 +2053,20 @@ a[content-field].ce-element--type-text {
 
 }
 
-.ct-widget .ct-anchored-dialog__target-button {
-  margin-right: 2px;
+.ct-widget .ct-btn-target {
   background: #aaa;
-  cursor: pointer;
-  float: right;
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
-  width: 40px;
 }
 
-.ct-widget  .ct-anchored-dialog__target-button:before {
+.ct-widget  .ct-btn-target:before {
   color: #aaa;
   content: '\ea7d';
 }
 
-.ct-widget  .ct-anchored-dialog__target-button:hover {
+.ct-widget  .ct-btn-target:hover {
   background: #2cc36b
 }
 
-.ct-widget  .ct-anchored-dialog__target-button--active {
+.ct-widget  .ct-btn-target.active {
   background: #2cc36b;
 }
 

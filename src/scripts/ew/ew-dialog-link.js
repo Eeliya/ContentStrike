@@ -50,11 +50,11 @@
       this._domInput.setAttribute('value', this._href);
       this._domElement.appendChild(this._domInput);
       this._domTargetButton = this.constructor.createDiv([
-        'ct-anchored-dialog__target-button'
+        'ct-anchored-dialog__button ct-btn-target'
       ]);
       
       if (this._target === NEW_WINDOW_TARGET) {
-        ContentEdit.addCSSClass(this._domTargetButton, 'ct-anchored-dialog__target-button--active');
+        ContentEdit.addCSSClass(this._domTargetButton, 'active');
       }
       this._domButton = this.constructor.createDiv([
         'ct-anchored-dialog__button'
@@ -107,10 +107,10 @@
           ev.preventDefault();
           if (_this._target === NEW_WINDOW_TARGET) {
             _this._target = '';
-            return ContentEdit.removeCSSClass(_this._domTargetButton, 'ct-anchored-dialog__target-button--active');
+            return ContentEdit.removeCSSClass(_this._domTargetButton, 'active');
           } else {
             _this._target = NEW_WINDOW_TARGET;
-            return ContentEdit.addCSSClass(_this._domTargetButton, 'ct-anchored-dialog__target-button--active');
+            return ContentEdit.addCSSClass(_this._domTargetButton, 'button--active');
           }
         };
       })(this));
