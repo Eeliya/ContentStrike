@@ -467,7 +467,7 @@
       //$.post("~admin/html/content-management/link-chooser-media.php", {
       System.loadModule({
         id: "forms/media-chooser",
-        url: "~admin/html/content-management/link-chooser-media.php",
+        url: "~admin/html/content-management/link-chooser/link-chooser-media.php",
         params: {
           callback: ""
         }

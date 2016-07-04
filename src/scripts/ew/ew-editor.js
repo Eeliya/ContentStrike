@@ -467,8 +467,8 @@
         this.history.stopWatching();
         this.history = null;
       }
-      this._toolbox.hide();
-      this._inspector.hide();
+      //this._toolbox.hide();
+      //this._inspector.hide();
       this._regions = {};
       this._domRegions[0].style.marginTop = '';
 
