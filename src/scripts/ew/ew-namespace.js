@@ -22,6 +22,7 @@
         'heading',
         'heading2',
         'paragraph',
+        'preformatted',
         'link-block',
         'unordered-list',
         'ordered-list',
@@ -35,8 +36,7 @@
         'ew-media',
         'image',
         'video',
-        'widget-embed',
-        'preformatted',
+        'widget-embed',        
         'content-field'
       ],
       [

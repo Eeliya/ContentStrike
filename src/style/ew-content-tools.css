@@ -1317,8 +1317,7 @@ video.align-right,
   transform: rotate(-15deg)
 }
 .ct-widget.ct-inspector {
-  background: rgba(233, 233, 233, 0.2);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: #eee;
   bottom: 0;
   height: 32px;
   left: 0;
@@ -1329,7 +1328,7 @@ video.align-right,
 }
 
 .ct-widget.ct-top-inspector {
-  background: #d0d0d0;
+  background: #ddd;
   height: 24px;
   overflow: hidden;
   padding: 0 15px 0;
@@ -1609,9 +1608,9 @@ video.align-right,
 }
 
 .ct-widget.ct-top-toolbox {
-  background: #ddd;
+  background: transparent;
   left: 0;
-  padding: 16px 0 0;
+  padding: 18px 0 2px;
   top: 0;
   right: 0;
   overflow: hidden;
@@ -1641,13 +1640,13 @@ video.align-right,
   padding-top: 0
 }
 .ct-widget .ct-tool {
-  border-radius: 2px;
+  border-radius: 4px;
   color: #464646;
   cursor: pointer;
   float: left;
   height: 32px;
   line-height: 32px;
-  margin: 4px;
+  margin: 4px 0;
   margin-right: 4px;
   position: relative;
   text-align: center;
@@ -1660,25 +1659,24 @@ video.align-right,
   min-width: 32px
 }
 .ct-widget .ct-tool:after {
-  background: black;
-  border-radius: 2px;
-  color: white;
+  background-color: transparent;
+  color: #000;
   content: attr(data-tooltip);
   display: none;
   hyphens: auto;
-  left: -34px;
+  left: 0;
   line-height: 20px;
-  opacity: .7;
-  padding: 0 8px;
+  padding: 0;
   position: absolute;
-  bottom: 28px;
+  bottom: 32px;
   font-family: arial, sans-serif;
   font-size: 12px;
   line-height: 20px;
+  min-width: 32px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  width: 100px;
-  word-break: break-word;
+  white-space: nowrap;
+  width: auto;
 
 }
 .ct-widget .ct-tool:hover:after {
@@ -1693,11 +1691,11 @@ video.align-right,
   height: 32px;
 }
 
-.ct-widget .ct-tool:nth-child(3n) {
-  margin-right: 0
+.ct-widget .ct-tool:last-child {
+  margin-right: 0;
 }
 .ct-widget .ct-tool:hover {
-  background: rgba(255, 255, 255, 0.5)
+  background: #ddd;
 }
 .ct-widget .ct-tool--disabled {
   color: rgba(70, 70, 70, 0.33)
@@ -1714,11 +1712,11 @@ video.align-right,
   background: rgba(0, 0, 0, 0.025)
 }
 .ct-widget .ct-tool--applied {
-  background: rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25)
+  background: #ddd;
+  /*box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25)*/
 }
 .ct-widget .ct-tool--applied:hover {
-  background: rgba(0, 0, 0, 0.15)
+  background: #ddd;
 }
 .ct-widget .ct-tool--bold:before {
   content: "\ea62"
@@ -1750,7 +1748,7 @@ video.align-right,
   content: "H3"
 }
 .ct-widget .ct-tool--paragraph:before {
-  content: "P"
+  content: "\0050"
 }
 .ct-widget .ct-tool--preformatted:before {
   content: "\ea80"

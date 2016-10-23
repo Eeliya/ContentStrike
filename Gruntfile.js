@@ -120,7 +120,7 @@
           expand: true,
           cwd: 'build/',
           src: ['**/*'],
-          dest: "C:/xampp/htdocs/EverythingWidget/packages/admin/public/js/ContentStrike/"
+          dest: "C:/xampp/htdocs/EverythingWidget/packages/admin/public/js/content-strike/"
         }
       },
       clean: {
