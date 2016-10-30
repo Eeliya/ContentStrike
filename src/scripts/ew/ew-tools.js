@@ -236,7 +236,7 @@
 //          toContentField(image, element.attr('content-field'));
 //          imageChooserDialog.dispose();
 //        };
-        imageChooserDialog[0].selectMedia = function (item) {
+        module.scope.selectMedia = function (item) {
           var selectedItem = System.entity('services/media_chooser').selectItem(item);
 
           switch (selectedItem.type) {
