@@ -215,6 +215,8 @@
       return ContentField.__super__.constructor.apply(this, arguments);
     }
 
+    ContentTools.ToolShelf.stow(ContentField, 'content-field');
+
     var setImage = function (element, callback) {
       var app, forceAdd, paragraph, region;
       app = ContentTools.EditorApp.get();
@@ -281,8 +283,6 @@
       imageChooserDialog.open();
       //return callback(true);
     };
-
-    ContentTools.ToolShelf.stow(ContentField, 'content-field');
 
     ContentField.label = 'Content Field';
     ContentField.icon = 'content-field';
@@ -418,7 +418,9 @@
     };
 
     ContentField.canApply = function (element, selection) {
-      return element.parent().constructor.name === 'Region' || element._parent.constructor.name === 'ListItem';
+      return element.parent().constructor.name === 'Region' ||
+              element._parent.constructor.name === 'ListItem' ||
+              element.parent().constructor.name === 'ElementCollection';
     };
 
     //var oldContentField = null;
@@ -733,4 +735,42 @@
 
   })(ContentTools.Tools.UnorderedList);
 
+  ContentTools.Tools.Layer = (function (superClass) {
+    extend(Layer, superClass);
+
+    function Layer() {
+      return Layer.__super__.constructor.apply(this, arguments);
+    }
+
+    Layer.label = 'Layers';
+    Layer.icon = 'layers';
+
+    ContentTools.ToolShelf.stow(Layer, 'layer');
+
+    Layer.canApply = function (element, selection) {
+      return element.parent().constructor.name === 'Region' || element._parent.constructor.name === 'ListItem';
+    };
+
+    //var oldContentField = null;
+    Layer.apply = function (element, selection, callback) {
+      var layer = new ContentEdit.ElementCollection('div', {});
+      layer.attr('layer', true);
+      
+//      layer.focus = ContentEdit.Element.prototype.focus.bind(layer);
+      
+//      layer.blur = ContentEdit.Element.prototype.blur.bind(layer);
+      
+      var region = element.parent();
+      region.attach(layer);
+      
+      var paragraph = new ContentEdit.Text('p');
+      layer.attach(paragraph);
+      paragraph.focus();
+    };
+
+    Layer.isApplied = function (element, selection) {
+      return false;
+    };
+
+  })(ContentTools.Tool);
 })(this);

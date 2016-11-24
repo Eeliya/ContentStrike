@@ -37,7 +37,8 @@
         'image',
         'video',
         'widget-embed',        
-        'content-field'
+        'content-field',
+        'layer'
       ],
       [
         'undo',

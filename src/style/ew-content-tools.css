@@ -1728,6 +1728,12 @@ video.align-right,
   font-weight: bold
 }
 
+.ct-widget .ct-tool--layers:before {
+  font-family: arial, sans-serif;
+  content: "L";
+  font-weight: bold
+}
+
 .ct-widget .ct-tool--ew-media:before {
   font-family: arial, sans-serif;
   content: "M";
@@ -2108,4 +2114,14 @@ a.ce-element--type-text {
 
 .ct-iframe-dialog .ct-control--insert {
   margin-top: 40px;
+}
+
+div[layer] {
+  padding: 3px;
+  background-color: #eee;
+  border:  1px solid transparent;
+}
+
+div[layer].ce-element--focused {
+  border-color: #000;
 }

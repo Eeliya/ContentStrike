@@ -17,7 +17,7 @@
             return child;
           };
 
-  ContentEdit.TagNames.get().register(ContentEdit.Text, 'address', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'a');
+  ContentEdit.TagNames.get().register(ContentEdit.Text, 'address', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'a','div');
 
 //  ContentEdit.Root = (function () {
 //    var instance;
@@ -151,7 +151,7 @@
         indent = '';
       }
       this._attributes['alt'] = this._attributes['alt'] || '';
-      
+
       img = "" + indent + "<img" + (this._attributesToString()) + ">";
       if (this.a) {
         this.a['data-ce-tag'] = 'img';
@@ -268,7 +268,7 @@
         attributes['content-field'] = a['content-field'];
         delete a['content-field'];
       }
-      
+
       return new this(attributes, a);
     };
 
@@ -378,6 +378,7 @@
     Text.prototype.mount = function () {
       var name, value, _ref;
       this._domElement = document.createElement(this._tagName);
+      this._domElement.setAttribute('dir', 'auto');
       _ref = this._attributes;
       for (name in _ref) {
         value = _ref[name];
