@@ -215,6 +215,8 @@
       return ContentField.__super__.constructor.apply(this, arguments);
     }
 
+    ContentTools.ToolShelf.stow(ContentField, 'content-field');
+
     var setImage = function (element, callback) {
       var app, forceAdd, paragraph, region;
       app = ContentTools.EditorApp.get();
@@ -281,8 +283,6 @@
       imageChooserDialog.open();
       //return callback(true);
     };
-
-    ContentTools.ToolShelf.stow(ContentField, 'content-field');
 
     ContentField.label = 'Content Field';
     ContentField.icon = 'content-field';
@@ -418,7 +418,9 @@
     };
 
     ContentField.canApply = function (element, selection) {
-      return element.parent().constructor.name === 'Region' || element._parent.constructor.name === 'ListItem';
+      return element.parent().constructor.name === 'Region' ||
+              element._parent.constructor.name === 'ListItem' ||
+              element.parent().constructor.name === 'ElementCollection';
     };
 
     //var oldContentField = null;
@@ -733,4 +735,44 @@
 
   })(ContentTools.Tools.UnorderedList);
 
+  ContentTools.Tools.FlexBox = (function (superClass) {
+    extend(FlexBox, superClass);
+
+    function FlexBox() {
+      return FlexBox.__super__.constructor.apply(this, arguments);
+    }
+
+    FlexBox.label = 'Flex Box';
+    FlexBox.icon = 'flex-box';
+
+    ContentTools.ToolShelf.stow(FlexBox, 'flex-box');
+
+    FlexBox.canApply = function (element, selection) {
+      return element.parent().constructor.name === 'Region' || element._parent.constructor.name === 'ListItem';
+    };
+
+    //var oldContentField = null;
+    FlexBox.apply = function (element, selection, callback) {
+      var layer = new ContentEdit.Div({});
+
+//      layer.focus = ContentEdit.Element.prototype.focus.bind(layer);
+
+//      layer.blur = ContentEdit.Element.prototype.blur.bind(layer);
+
+      var region = element.parent();
+      region.attach(layer);
+
+      var paragraph = new ContentEdit.Div({}, true);
+      layer.attach(paragraph);
+
+      paragraph = new ContentEdit.Div({}, true);
+      layer.attach(paragraph);
+
+    };
+
+    FlexBox.isApplied = function (element, selection) {
+      return false;
+    };
+
+  })(ContentTools.Tool);
 })(this);
