@@ -38,7 +38,7 @@
         'video',
         'widget-embed',        
         'content-field',
-        'layer'
+        'flex-box'
       ],
       [
         'undo',

@@ -735,40 +735,42 @@
 
   })(ContentTools.Tools.UnorderedList);
 
-  ContentTools.Tools.Layer = (function (superClass) {
-    extend(Layer, superClass);
+  ContentTools.Tools.FlexBox = (function (superClass) {
+    extend(FlexBox, superClass);
 
-    function Layer() {
-      return Layer.__super__.constructor.apply(this, arguments);
+    function FlexBox() {
+      return FlexBox.__super__.constructor.apply(this, arguments);
     }
 
-    Layer.label = 'Layers';
-    Layer.icon = 'layers';
+    FlexBox.label = 'Flex Box';
+    FlexBox.icon = 'flex-box';
 
-    ContentTools.ToolShelf.stow(Layer, 'layer');
+    ContentTools.ToolShelf.stow(FlexBox, 'flex-box');
 
-    Layer.canApply = function (element, selection) {
+    FlexBox.canApply = function (element, selection) {
       return element.parent().constructor.name === 'Region' || element._parent.constructor.name === 'ListItem';
     };
 
     //var oldContentField = null;
-    Layer.apply = function (element, selection, callback) {
-      var layer = new ContentEdit.ElementCollection('div', {});
-      layer.attr('layer', true);
-      
+    FlexBox.apply = function (element, selection, callback) {
+      var layer = new ContentEdit.Div({});
+
 //      layer.focus = ContentEdit.Element.prototype.focus.bind(layer);
-      
+
 //      layer.blur = ContentEdit.Element.prototype.blur.bind(layer);
-      
+
       var region = element.parent();
       region.attach(layer);
-      
-      var paragraph = new ContentEdit.Text('p');
+
+      var paragraph = new ContentEdit.Div({}, true);
       layer.attach(paragraph);
-      paragraph.focus();
+
+      paragraph = new ContentEdit.Div({}, true);
+      layer.attach(paragraph);
+
     };
 
-    Layer.isApplied = function (element, selection) {
+    FlexBox.isApplied = function (element, selection) {
       return false;
     };
 
