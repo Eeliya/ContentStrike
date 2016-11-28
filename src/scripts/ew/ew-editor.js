@@ -422,6 +422,11 @@
         }
 
         if (lastChild.focus) {
+          var root = ContentEdit.Root.get();
+          if (root.focused()) {
+            root.focused().blur();
+          }
+          
           lastChild.focus();
         } else {
           lastChild._domElement.focus();

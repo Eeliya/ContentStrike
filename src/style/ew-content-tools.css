@@ -1728,17 +1728,22 @@ video.align-right,
 .ct-widget .ct-tool--content-field:before {
   font-family: arial, sans-serif;
   content: "CF";
+  max-width: 32px;
+  display: block;
+  font-size: 16px;
+  padding: 0;
+  line-height: 15px;
   font-weight: bold
 }
 
 .ct-widget .ct-tool--flex-box:before {
   font-family: arial, sans-serif;
   content: "FLEX BOX";
-  font-weight: bold;
+  font-weight: normal;
   max-width: 32px;
   display: block;
   overflow: hidden;
-  font-size: 11px;
+  font-size: 10px;
   line-height: 11px;
   vertical-align: middle;
   height: auto;
@@ -2130,21 +2135,36 @@ a.ce-element--type-text {
   flex: 0 1 100%;
   overflow: hidden;
   position: relative;
+  padding-top: 26px;
+  outline-offset: 0;
+  /*outline: 1px dashed #aaa;*/
+}
 
+.ce-element--type-div[content-field] {
+  padding-top: 58px;
+}
+
+.flex-box.flex-box-row {
+  flex-direction: row;
+}
+
+.flex-box.flex-box-column {
+  flex-direction: column;
 }
 
 .ce-element--type-div.flex-box {
   display: flex;
-  padding: 0;
+}
+
+.ce-element--type-div.flex-box.ce-element--focused {
+  /*background-color: rgba(0, 180, 255, .3);*/
 }
 
 .ce-element--type-div.flex-box > .ce-element--type-div {
-  border: 2px solid #ccc;
-  outline-offset: -1px;
-  padding: 10px;
+  margin: 4px;
 }
 
-.ce-element--type-div.flex-box > .ce-element--type-div:not(:last-child) {
+.ce-element--type-div.flex-box > .ce-element--type-div:not(.ce-element--type-di:last-child) {
   margin-right: 10px;
 }
 
@@ -2159,6 +2179,76 @@ a.ce-element--type-text {
   z-index: 2;
 }
 
-.ce-element--type-div.ce-element--focused {
-  border-color: #000;
+.ce-element--type-div.flex-box > .ce-element--type-div.ce-element--focused, .ce-element--type-div.ce-element--focused {
+  outline: 1px solid #000;
+}
+
+.ce-element-tools-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 26px;
+  line-height: 26px;
+  background-color: rgba(0,0,0,.06);
+  padding: 0;
+  cursor: pointer;
+}
+
+[content-field] > .ce-element-tools-bar {
+  top: 32px;
+}
+
+.ce-element--focused > .ce-element-tools-bar{
+  background-color: #FFE082;
+}
+
+.ce-element-tools-bar > .btn {
+  cursor: pointer;
+  border-width: 1px;
+  height: 26px;
+  line-height: 26px;
+  float: right;
+  font-size: 11px;
+  speak: none;
+  min-width: 26px;  
+  border-radius: 0;
+  color: rgba(255,255,255,.9);
+  padding: 0;
+  text-align: center;
+  margin: 0 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: normal;
+  color: #000;
+  background-color: transparent;
+}
+
+.ce-element--focused > .ce-element-tools-bar {
+}
+
+.ce-element-tools-bar > .btn:hover {
+  background-color: rgba(0,0,0,.16);
+  box-shadow: none;
+}
+
+.ce-element-tools-bar > .btn:active {
+  background-color: #000;
+  box-shadow: none;
+  color: #fff;
+}
+
+.ce-element-tools-bar > .btn.i-remove:hover:before {
+  opacity: .9;
+}
+
+.ce-element-tools-bar > .btn.i-remove:before {
+  font-family: 'icon';
+  font-weight: 300;
+  opacity: .4;
+  content: '\ea0f'
+}
+
+.ce-element-tools-bar > .btn.btn-text {
+  width: 80px;
+  padding: 0 10px;
 }

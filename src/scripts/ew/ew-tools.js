@@ -341,9 +341,12 @@
         } else if (e.keyCode === 13) {
           e.preventDefault();
           input.blur();
-          var l = element.content.length();
-          element.selection(new ContentSelect.Range(l, l));
-          element.focus();
+
+          if (element.content) {
+            var l = element.content.length();
+            element.selection(new ContentSelect.Range(l, l));
+            element.focus();
+          }
         }
         e.stopPropagation();
       });
@@ -420,7 +423,8 @@
     ContentField.canApply = function (element, selection) {
       return element.parent().constructor.name === 'Region' ||
               element._parent.constructor.name === 'ListItem' ||
-              element.parent().constructor.name === 'ElementCollection';
+              element.parent().constructor.name === 'ElementCollection' ||
+              element.parent().constructor.name === 'Div';
     };
 
     //var oldContentField = null;
@@ -753,21 +757,22 @@
 
     //var oldContentField = null;
     FlexBox.apply = function (element, selection, callback) {
-      var layer = new ContentEdit.Div({});
 
-//      layer.focus = ContentEdit.Element.prototype.focus.bind(layer);
 
-//      layer.blur = ContentEdit.Element.prototype.blur.bind(layer);
+      if (element._domElement.classList.contains('flex-box')) {
+        var layer = new ContentEdit.Div({}, true);
+        element.attach(layer);
+      } else {
+        var layer = new ContentEdit.Div({});        
 
-      var region = element.parent();
-      region.attach(layer);
-
-      var paragraph = new ContentEdit.Div({}, true);
-      layer.attach(paragraph);
-
-      paragraph = new ContentEdit.Div({}, true);
-      layer.attach(paragraph);
-
+        var region = element.parent();
+        region.attach(layer);
+        
+        layer.focus();
+        
+        var firstChild = new ContentEdit.Div({}, true);
+        layer.attach(firstChild);        
+      }
     };
 
     FlexBox.isApplied = function (element, selection) {
