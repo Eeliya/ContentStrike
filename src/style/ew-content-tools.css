@@ -1953,7 +1953,6 @@ video.align-right,
   margin-top: 20px;
   box-sizing: border-box;
   min-width: 300px;
-  border-top-right-radius: 15px;
 }
 
 p[content-field], h1[content-field], h2[content-field], h3[content-field], a[content-field] {
@@ -2027,9 +2026,11 @@ a[content-field].ce-element--type-text {
   color: rgba(255,255,255,.9);
   padding: 0;
   text-align: center;
-  margin: 2px 2px 0 10px;
+  margin: 2px 2px 0 6px;
   text-transform: uppercase;
   letter-spacing: normal;
+  position: relative;
+  z-index: 2;
 }
 
 .ew-content-field__title, .ew-content-field__input{
@@ -2038,19 +2039,20 @@ a[content-field].ce-element--type-text {
   line-height: 22px;
   padding: 0px 5px;
   height: 32px;
-  background-color: transparent;  
+  background-color: rgba(0,0,0,.03);  
   font-weight: bold;
-  width: calc(100% - 90px);
-  max-width: 500px;
+  width: 100%;
   outline: none;
   margin: 0;
   margin-top: 0px;
   margin-left: 0px;
-  float: left;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .ew-content-field__input:focus{
-  background-color: rgba(0,0,0,.1);
+  background-color: rgba(0,15,40,.15);
 }
 
 .ew-content-field__remove{
